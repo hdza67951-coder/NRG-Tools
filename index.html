@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NRGP Protects — Quote Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07090d;--s0:#0c0f15;--s1:#111620;--s2:#161c28;--s3:#1d2636;
+  --border:#1e2a3d;--border2:#28395a;
+  --blue:#4f8eff;--blue-dim:rgba(79,142,255,.12);
+  --green:#23d18b;--green-dim:rgba(35,209,139,.1);
+  --amber:#f0b429;--amber-dim:rgba(240,180,41,.1);
+  --red:#ff4d6d;--purple:#b48eff;
+  --t0:#eef2ff;--t1:#99b0cc;--t2:#4e6180;--t3:#283448;
+  --r:10px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--t0);min-height:100vh;overflow-x:hidden}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:300;background:rgba(7,9,13,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:52px;padding:0 28px;display:flex;align-items:center;gap:14px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#4f8eff,#2a5fcc);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#fff;box-shadow:0 0 14px rgba(79,142,255,.25)}
+.logo-name{font-family:'Familjen Grotesk',sans-serif;font-weight:700;font-size:15px}
+.logo-name em{color:var(--blue);font-style:normal}
+.nav-sep{width:1px;height:18px;background:var(--border)}
+.nav-sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t2);letter-spacing:.12em;text-transform:uppercase}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);flex-shrink:0}
+.nav-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t2)}
+
+/* LAYOUT */
+.wrap{max-width:1420px;margin:0 auto;padding:20px;display:grid;grid-template-columns:1fr 374px;gap:18px;align-items:start}
+
+/* TABS */
+.tabs{display:flex;gap:4px;margin-bottom:14px;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:4px}
+.tab-btn{flex:1;padding:7px 10px;border:none;border-radius:7px;background:none;color:var(--t2);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.tab-btn:hover{color:var(--t1)}
+.tab-btn.active{background:var(--s3);color:var(--t0);border:1px solid var(--border2)}
+.hot-pill{background:rgba(240,180,41,.15);color:var(--amber);border:1px solid rgba(240,180,41,.3);border-radius:4px;padding:1px 6px;font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:600}
+#tab-hot-content{display:none}
+#tab-hot-content.show,#tab-all-content.show{display:block}
+
+/* SEARCH */
+.search-wrap{position:relative;margin-bottom:12px}
+.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--t3);pointer-events:none}
+.search-wrap input{width:100%;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:9px 13px 9px 36px;color:var(--t0);font-family:'Space Grotesk',sans-serif;font-size:13px;outline:none;transition:border-color .15s}
+.search-wrap input::placeholder{color:var(--t3)}
+.search-wrap input:focus{border-color:var(--border2)}
+
+/* BEST SELLERS */
+.bs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:620px){.bs-grid{grid-template-columns:1fr}}
+
+.bs-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:16px 16px 14px;cursor:pointer;position:relative;transition:background .15s,border-color .15s,transform .12s;overflow:hidden}
+.bs-card::after{content:'';position:absolute;inset:0;opacity:0;border-radius:var(--r);box-shadow:inset 0 0 0 1px var(--blue);transition:opacity .2s;pointer-events:none}
+.bs-card:hover{background:var(--s2);transform:translateY(-2px)}
+.bs-card.selected{background:var(--blue-dim);border-color:var(--blue)}
+.bs-card.selected::after{opacity:1}
+.bs-check{position:absolute;top:11px;right:11px;width:19px;height:19px;border-radius:50%;background:var(--blue);display:none;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700}
+.bs-card.selected .bs-check{display:flex}
+.bs-num{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:.08em;margin-bottom:10px}
+.bs-icon{font-size:20px;margin-bottom:9px;display:block}
+.bs-name{font-family:'Familjen Grotesk',sans-serif;font-weight:600;font-size:14px;line-height:1.3;margin-bottom:5px}
+.bs-why{font-size:11px;color:var(--t1);line-height:1.55;margin-bottom:12px}
+.bs-footer{display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
+.bs-price-block{}
+.bs-orig{font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:600;line-height:1}
+.bs-orig .mo{font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:400;color:var(--t2);margin-left:1px}
+.bs-disc-price{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;color:var(--green);display:none}
+.bs-disc-price .mo{font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:400;color:var(--t1)}
+.bs-strike{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);text-decoration:line-through;display:none;margin-bottom:2px}
+.bs-meta{font-size:10px;color:var(--t2);text-align:right;max-width:100px;line-height:1.5}
+
+/* COVERAGE POPUP inside BS card */
+.bs-coverage{display:none;margin-top:12px;padding-top:11px;border-top:1px solid var(--border)}
+.bs-card.selected .bs-coverage{display:block}
+.bs-cov-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+.bs-cov-list li{font-size:11px;color:var(--t1);padding-left:13px;position:relative;line-height:1.5}
+.bs-cov-list li::before{content:'·';position:absolute;left:2px;color:var(--blue);font-size:14px;line-height:1}
+
+/* MANUAL DISC — best sellers */
+.bs-manual{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);align-items:center;gap:6px}
+.bs-card.selected .bs-manual{display:flex}
+.bs-manual-lbl{font-size:10px;color:var(--t2);flex:1}
+.disc-btns{display:flex;gap:4px}
+.db{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 9px;border-radius:5px;border:1px solid var(--border2);background:none;color:var(--t2);cursor:pointer;transition:all .15s}
+.db:hover{color:var(--t1);border-color:var(--t2)}
+.db.on10{border-color:var(--blue);background:var(--blue-dim);color:var(--blue)}
+.db.on15{border-color:var(--green);background:var(--green-dim);color:var(--green)}
+
+/* CATEGORY */
+.cat-block{margin-bottom:4px}
+.cat-head{display:flex;align-items:center;gap:9px;padding:8px 12px;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;user-select:none;margin-bottom:3px;transition:border-color .15s}
+.cat-head:hover{border-color:var(--border2)}
+.cat-ico{font-size:14px;width:18px;text-align:center}
+.cat-lbl{font-family:'Familjen Grotesk',sans-serif;font-weight:600;font-size:13px}
+.cat-n{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3)}
+.cat-arr{color:var(--t3);font-size:9px;margin-left:5px;transition:transform .2s}
+.cat-block.closed .cat-arr{transform:rotate(-90deg)}
+.cat-block.closed .cat-plans{display:none}
+.cat-plans{display:flex;flex-direction:column;gap:3px;margin-bottom:6px;padding-left:2px}
+
+/* PLAN CARD */
+.plan-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;position:relative;transition:background .14s,border-color .14s}
+.plan-card:hover{background:var(--s2);border-color:var(--border2)}
+.plan-card.selected{background:var(--blue-dim);border-color:var(--blue)}
+.plan-card.hidden{display:none}
+.pc-check{position:absolute;top:-5px;right:-5px;width:17px;height:17px;border-radius:50%;background:var(--blue);display:none;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;box-shadow:0 0 0 2px var(--bg)}
+.plan-card.selected .pc-check{display:flex}
+.pc-combo-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 6px;border-radius:3px;background:rgba(180,142,255,.1);color:var(--purple);border:1px solid rgba(180,142,255,.2);margin-bottom:5px}
+.pc-name{font-family:'Familjen Grotesk',sans-serif;font-weight:600;font-size:13px;margin-bottom:3px;line-height:1.3}
+.pc-preview{font-size:11.5px;color:var(--t1);line-height:1.5;margin-bottom:6px}
+.pc-tags{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:2px}
+.tag{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 6px;border-radius:3px}
+.tw{background:rgba(240,180,41,.07);color:#b08020;border:1px solid rgba(240,180,41,.15)}
+.tl{background:rgba(79,142,255,.07);color:#4e80d8;border:1px solid rgba(79,142,255,.15)}
+.tm{background:rgba(35,209,139,.07);color:#1a9060;border:1px solid rgba(35,209,139,.15)}
+.tp{background:rgba(180,142,255,.07);color:#8870cc;border:1px solid rgba(180,142,255,.15)}
+
+/* COVERAGE inside plan card */
+.pc-coverage{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.plan-card.selected .pc-coverage{display:block}
+.pc-cov-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+.pc-cov-list li{font-size:11px;color:var(--t1);padding-left:13px;position:relative;line-height:1.5}
+.pc-cov-list li::before{content:'·';position:absolute;left:2px;color:var(--blue);font-size:14px;line-height:1}
+
+/* MANUAL DISC inside plan card */
+.pc-manual{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);align-items:center;gap:6px}
+.plan-card.selected .pc-manual{display:flex}
+.pc-manual-lbl{font-size:10px;color:var(--t2);flex:1}
+
+/* PRICE right col */
+.pc-right{text-align:right;flex-shrink:0;min-width:68px;display:flex;flex-direction:column;align-items:flex-end;gap:1px}
+.pr-strike{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);text-decoration:line-through;display:none}
+.pr-disc{font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--green);display:none;line-height:1}
+.pr-orig{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:500;line-height:1}
+.pr-mo{font-size:10px;color:var(--t2);font-family:'Space Grotesk',sans-serif;font-weight:400}
+
+/* SUMMARY */
+.summary{position:sticky;top:60px;background:var(--s0);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.sum-head{background:linear-gradient(150deg,#0c1422,#101828);border-bottom:1px solid var(--border);padding:18px 20px}
+.sum-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t2);letter-spacing:.14em;text-transform:uppercase;margin-bottom:5px}
+.sum-title{font-family:'Familjen Grotesk',sans-serif;font-weight:700;font-size:18px}
+.disc-steps{display:flex;gap:5px;margin-top:14px}
+.ds{flex:1;border:1px solid var(--border);border-radius:7px;padding:7px 5px;text-align:center;transition:all .25s}
+.ds.on{border-color:var(--blue);background:var(--blue-dim)}
+.ds.gold{border-color:var(--amber);background:var(--amber-dim)}
+.ds-n{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--t3)}
+.ds.on .ds-n{color:var(--blue)}
+.ds.gold .ds-n{color:var(--amber)}
+.ds-lbl{font-size:9.5px;color:var(--t3);margin-top:2px}
+
+.sum-body{padding:16px 20px}
+.cnt-row{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.cnt-n{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--s2);border:1px solid var(--border);border-radius:5px;padding:2px 10px;color:var(--blue);min-width:28px;text-align:center}
+.cnt-h{font-size:11px;color:var(--t2)}
+.empty{text-align:center;padding:28px 0;color:var(--t3);font-size:12px;line-height:1.8}
+.empty-i{font-size:28px;opacity:.2;margin-bottom:8px}
+
+/* SELECTED LIST */
+.sel-list{display:flex;flex-direction:column}
+.sel-item{padding:10px 0;border-bottom:1px solid var(--border);animation:fdin .15s ease}
+@keyframes fdin{from{opacity:0;transform:translateX(4px)}to{opacity:1;transform:none}}
+.sel-item:last-child{border-bottom:none}
+.si-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.si-name{font-size:12px;font-weight:500;line-height:1.35;max-width:175px}
+.si-sub{font-size:10px;color:var(--t3);margin-top:2px}
+.si-prices{text-align:right;flex-shrink:0}
+.si-orig-sm{font-size:10px;color:var(--t3);text-decoration:line-through}
+.si-final{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500}
+.si-final.green{color:var(--green)}
+/* manual in summary */
+.si-manual{display:flex;align-items:center;gap:6px;margin-top:7px}
+.si-manual-lbl{font-size:10px;color:var(--t2);flex:1}
+
+/* TOTALS */
+.disc-banner{display:none;align-items:center;gap:8px;border:1px solid rgba(240,180,41,.2);background:var(--amber-dim);border-radius:7px;padding:8px 10px;margin:10px 0}
+.disc-banner.show{display:flex}
+.db-pct{font-family:'Familjen Grotesk',sans-serif;font-weight:700;font-size:13px;color:var(--amber)}
+.totals{margin-top:10px;border-top:1px solid var(--border);padding-top:12px}
+.t-row{display:flex;justify-content:space-between;font-size:12px;color:var(--t2);padding:3px 0}
+.t-green{color:var(--green)}
+.t-grand{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--border);margin-top:10px;padding-top:12px}
+.tg-lbl{font-size:11px;color:var(--t2)}
+.tg-val{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:600}
+.tg-val sup{font-size:13px;vertical-align:super;color:var(--t2)}
+.t-note{font-size:10px;color:var(--t3);margin-top:8px;line-height:1.6;font-style:italic}
+.reset-btn{width:100%;margin-top:14px;background:none;border:1px solid var(--border);border-radius:7px;padding:9px;color:var(--t2);font-family:'Space Grotesk',sans-serif;font-size:11.5px;cursor:pointer;transition:all .15s}
+.reset-btn:hover{border-color:var(--red);color:var(--red);background:rgba(255,77,109,.04)}
+
+@media(max-width:960px){.wrap{grid-template-columns:1fr}.summary{position:static}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <div class="logo-mark">NP</div>
+    <div class="logo-name">NRGP <em>Protects</em></div>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="nav-sub">Quote Tool</div>
+  <div class="nav-right">
+    <div class="live-dot"></div>
+    <div class="nav-tag">v3.0</div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <!-- LEFT -->
+  <div>
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-hot-btn" onclick="switchTab('hot')">
+        🔥 Best Sellers <span class="hot-pill">HOT</span>
+      </button>
+      <button class="tab-btn" id="tab-all-btn" onclick="switchTab('all')">
+        📋 All Plans
+      </button>
+    </div>
+
+    <div id="tab-hot-content" class="show">
+      <div class="bs-grid" id="bs-grid"></div>
+    </div>
+
+    <div id="tab-all-content">
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10.5 10.5l3 3"/></svg>
+        <input type="text" id="search" placeholder="Search plans…" oninput="filterPlans()">
+      </div>
+      <div id="all-container"></div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary">
+    <div class="sum-head">
+      <div class="sum-eyebrow">Client Quote</div>
+      <div class="sum-title">Quote Summary</div>
+      <div class="disc-steps">
+        <div class="ds" id="ds0"><div class="ds-n">—</div><div class="ds-lbl">1 plan</div></div>
+        <div class="ds" id="ds1"><div class="ds-n">10%</div><div class="ds-lbl">2 plans</div></div>
+        <div class="ds" id="ds2"><div class="ds-n">15%</div><div class="ds-lbl">3+ plans</div></div>
+      </div>
+    </div>
+
+    <div class="sum-body">
+      <div class="cnt-row">
+        <div class="cnt-n" id="cnt-n">0</div>
+        <div class="cnt-h" id="cnt-h">plan units selected</div>
+      </div>
+
+      <div class="empty" id="empty">
+        <div class="empty-i">🛡️</div>
+        Select plans to build a client quote
+      </div>
+
+      <div class="sel-list" id="sel-list"></div>
+
+      <div class="disc-banner" id="disc-banner">
+        <span style="font-size:15px">🎉</span>
+        <div>
+          <div style="font-size:10px;color:var(--t2)">Auto-discount applied</div>
+          <div class="db-pct" id="db-pct">15% OFF</div>
+        </div>
+      </div>
+
+      <div class="totals" id="totals" style="display:none">
+        <div class="t-row"><span>Subtotal</span><span id="t-sub">$0.00</span></div>
+        <div class="t-row t-green" id="t-save-row" style="display:none">
+          <span>You save</span><span id="t-save">$0.00</span>
+        </div>
+        <div class="t-grand">
+          <div class="tg-lbl">Monthly total</div>
+          <div class="tg-val"><sup>$</sup><span id="grand">0.00</span></div>
+        </div>
+        <div class="t-note">30-day waiting period on repair plans · No deductibles · No service call fees</div>
+      </div>
+
+      <button class="reset-btn" onclick="resetAll()">✕  Clear selection</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// PLAN DATA
+//
+// planUnits   = how many units count toward the auto-discount
+//               threshold (2 = counts as 2 eligible plan units)
+// fixedPrice  = price is locked; auto-discount NOT applied to
+//               this plan's price — but it DOES count its planUnits
+//               toward the global threshold so other plans can hit
+//               the 10%/15% tier
+// ═══════════════════════════════════════════════════════════════
+var PLANS = [
+
+  // ── BEST SELLERS ─────────────────────────────────────────────
+  {id:'elec-surge', cat:'Electrical', icon:'⚡', planUnits:2, fixedPrice:true, bestSeller:true, bsRank:2,
+   name:'Electrical & Surge Protection Plan', price:10.99,
+   bsWhy:'Electrical repairs + surge protection for all your devices. Fixed bundle price — always $10.99.',
+   tags:['30-day wait','$500/claim electrical','$2k/term surge'],
+   preview:'Wiring, breakers, outlets + surge coverage for appliances, TVs & computers',
+   covers:['Electrical: wiring, breakers, panels, outlets, switches','Doorbells, alarm wiring, smoke & CO detectors (low-voltage)','Surge: major kitchen appliances','Surge: televisions & consumer electronics','Surge: computers & gaming consoles']},
+
+  {id:'plumb-full', cat:'Interior Plumbing', icon:'🔧', planUnits:2, fixedPrice:false, bestSeller:true, bsRank:1,
+   name:'Plumbing, Maint. & Water Heater PLUS', price:27.99,
+   bsWhy:'Top seller. Plumbing repairs + annual tune-up + full water heater coverage with $500 replacement credit.',
+   tags:['30-day wait','$500/claim','Tune-up + Water Heater'],
+   preview:'Plumbing repairs, 1 annual tune-up, water heater repairs & $500 replacement credit',
+   covers:['Plumbing repairs (excludes fixtures)','1 plumbing tune-up per term','Water heater repairs (tank & tankless)','$500 credit toward water heater replacement if irreparable']},
+
+  {id:'kitchen', cat:'Kitchen & Laundry', icon:'🍳', planUnits:1, fixedPrice:false, bestSeller:true, bsRank:3,
+   name:'Kitchen Repair PLUS', price:24.99,
+   bsWhy:'Covers the 4 main kitchen appliances — refrigerator, oven, dishwasher, microwave — plus $500 replacement.',
+   tags:['30-day wait','$500/claim','+$500 replacement'],
+   preview:'Refrigerator, oven/range, dishwasher, built-in microwave + $500 replacement credit',
+   covers:['Range / Oven / Cooktop','Kitchen refrigerator (with ice maker)','Dishwasher','Built-in microwave','$500 replacement credit if irreparable']},
+
+  {id:'laundry', cat:'Kitchen & Laundry', icon:'🧺', planUnits:1, fixedPrice:false, bestSeller:true, bsRank:4,
+   name:'Laundry Room Repair PLUS', price:13.99,
+   bsWhy:'Washer & dryer covered. Great add-on to the Kitchen plan for a full appliance package.',
+   tags:['30-day wait','$500/claim','+$500 replacement'],
+   preview:'Washer & dryer repairs + $500 replacement credit',
+   covers:['Residential clothes washer (all types)','Residential clothes dryer (electric & gas)','$500 replacement credit if irreparable']},
+
+  // ── COOLING ──────────────────────────────────────────────────
+  {id:'cool-repair', cat:'Cooling (A/C)', icon:'❄️', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Cooling – Repair', price:11.99,
+   tags:['30-day wait','$500/claim','$2k annual'],
+   preview:'A/C repairs only',
+   covers:['Central ducted A/C, water evaporative cooler, geothermal','Thermostat & zoning control panel','Excludes: refrigerant, filters, cosmetic parts']},
+  {id:'cool-repair-plus', cat:'Cooling (A/C)', icon:'❄️', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Cooling – Repair PLUS', price:14.99,
+   tags:['30-day wait','$500/claim','+$500 replacement'],
+   preview:'A/C repairs + $500 replacement credit',
+   covers:['Air conditioning repairs','$500 credit toward A/C replacement if irreparable']},
+  {id:'cool-rm', cat:'Cooling (A/C)', icon:'❄️', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Cooling – Repair & Maintenance', price:21.99,
+   tags:['30-day wait','$500/claim','1 tune-up/year'],
+   preview:'A/C repairs + 1 annual tune-up',
+   covers:['Air conditioning repairs','1 A/C tune-up per term (no waiting period for tune-up)']},
+  {id:'cool-rm-plus', cat:'Cooling (A/C)', icon:'❄️', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Cooling – Repair & Maintenance PLUS', price:24.99,
+   tags:['30-day wait','$500/claim','Tune-up + $500 replacement'],
+   preview:'A/C repairs + tune-up + $500 replacement credit',
+   covers:['Air conditioning repairs','1 tune-up per term','$500 credit toward replacement if irreparable']},
+
+  // ── HEATING ──────────────────────────────────────────────────
+  {id:'heat-repair', cat:'Heating', icon:'🔥', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Heating – Repair', price:11.99,
+   tags:['30-day wait','$500/claim','$2k annual'],
+   preview:'Heating repairs only',
+   covers:['Gas furnace, oil/electric heater, boiler, heat pump, geothermal','Thermostat & zoning control panel']},
+  {id:'heat-repair-plus', cat:'Heating', icon:'🔥', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Heating – Repair PLUS', price:14.99,
+   tags:['30-day wait','$500/claim','+$500 replacement'],
+   preview:'Heating repairs + $500 replacement credit',
+   covers:['Heating system repairs','$500 credit toward replacement if irreparable']},
+  {id:'heat-rm', cat:'Heating', icon:'🔥', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Heating – Repair & Maintenance', price:21.99,
+   tags:['30-day wait','$500/claim','1 tune-up/year'],
+   preview:'Heating repairs + 1 annual tune-up',
+   covers:['Heating system repairs','1 heating tune-up per term']},
+  {id:'heat-rm-plus', cat:'Heating', icon:'🔥', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Heating – Repair & Maintenance PLUS', price:24.99,
+   tags:['30-day wait','$500/claim','Tune-up + $500 replacement'],
+   preview:'Heating repairs + tune-up + $500 replacement credit',
+   covers:['Heating system repairs','1 tune-up per term','$500 credit toward replacement if irreparable']},
+
+  // ── H&C COMBINED ─────────────────────────────────────────────
+  {id:'hc-maint', cat:'Heating & Cooling Combined', icon:'🌡️', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'H&C – Maintenance Only', price:17.99,
+   tags:['No waiting','2 tune-ups/year'],
+   preview:'2 annual tune-ups for heating & A/C — no repairs',
+   covers:['2 tune-ups per term (one per system)','No repair coverage included']},
+  {id:'hc-repair', cat:'Heating & Cooling Combined', icon:'🌡️', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'H&C – Repair', price:19.99,
+   tags:['30-day wait','$500/claim'],
+   preview:'A/C & Heating repairs',
+   covers:['Air conditioning repairs','Heating system repairs']},
+  {id:'hc-repair-plus', cat:'Heating & Cooling Combined', icon:'🌡️', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'H&C – Repair PLUS', price:22.99,
+   tags:['30-day wait','$500/claim','+$500 replacement'],
+   preview:'A/C & Heating repairs + $500 replacement credit',
+   covers:['A/C & Heating repairs','$500 credit toward system replacement if irreparable']},
+  {id:'hc-rm', cat:'Heating & Cooling Combined', icon:'🌡️', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'H&C – Repair & Maintenance', price:29.99,
+   tags:['30-day wait','$500/claim','2 tune-ups/year'],
+   preview:'A/C & Heating repairs + 2 annual tune-ups',
+   covers:['A/C & Heating repairs','2 tune-ups per term (one per system)']},
+  {id:'hc-rm-plus', cat:'Heating & Cooling Combined', icon:'🌡️', planUnits:2, fixedPrice:false, bestSeller:false,
+   name:'H&C – Repair & Maintenance PLUS', price:32.99,
+   tags:['30-day wait','$500/claim','2 tune-ups + $500 replacement'],
+   preview:'Full HVAC: repairs, 2 tune-ups, $500 replacement credit',
+   covers:['A/C & Heating repairs','2 tune-ups per term (one per system)','$500 credit toward replacement if irreparable']},
+
+  // ── ELECTRICAL INDIVIDUAL ─────────────────────────────────────
+  {id:'elec-repair-only', cat:'Electrical', icon:'⚡', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Electrical Repair Only', price:8.99,
+   tags:['30-day wait','$500/claim'],
+   preview:'Wiring, breakers, panels, outlets, switches',
+   covers:['General wiring, meter boxes (customer-owned)','Fuse boxes, circuit breakers, panels','Switches & outlets','Doorbells, alarm wiring, smoke/CO detectors']},
+  {id:'surge-only', cat:'Electrical', icon:'🔌', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Surge Protection Only', price:5.99,
+   tags:['30-day wait','$2k/term'],
+   preview:'Surge coverage: appliances, TVs, computers, gaming',
+   covers:['Major kitchen appliances (surge)','Televisions (surge)','Consumer electronics & computers (surge)','Gaming consoles (surge)']},
+  {id:'elec-rm', cat:'Electrical', icon:'⚡', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Electrical Repair & Maintenance', price:17.99,
+   tags:['30-day wait','$500/claim','Annual inspection'],
+   preview:'Electrical repairs + annual safety inspection',
+   covers:['All electrical repairs','1 annual safety inspection per term']},
+  {id:'elec-ev', cat:'Electrical', icon:'⚡', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Electrical Repair + EV Charging', price:8.99,
+   tags:['30-day wait','$500/claim','EV station'],
+   preview:'Electrical repairs + EV charging station coverage',
+   covers:['Electrical system repairs','EV charging station coverage']},
+
+  // ── INTERIOR PLUMBING INDIVIDUAL ─────────────────────────────
+  {id:'plumb-repair', cat:'Interior Plumbing', icon:'🔧', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Plumbing – Repair', price:8.99,
+   tags:['30-day wait','$500/claim'],
+   preview:'Plumbing repairs (excludes fixtures)',
+   covers:['Pipes, valves, interior plumbing components','Excludes: fixtures, sump pumps, well pumps, exterior lines']},
+  {id:'plumb-rm', cat:'Interior Plumbing', icon:'🔧', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Plumbing – Repair & Maintenance', price:18.99,
+   tags:['30-day wait','$500/claim','1 tune-up/year'],
+   preview:'Plumbing repairs + 1 annual tune-up',
+   covers:['Plumbing repairs (excludes fixtures)','1 plumbing tune-up per term']},
+  {id:'gas-line', cat:'Interior Plumbing', icon:'🔧', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Interior Gas Line Repair', price:4.99,
+   tags:['30-day wait','$500/claim'],
+   preview:'Interior gas line repairs',
+   covers:['Interior gas line repairs only','Excludes exterior gas lines']},
+
+  // ── WATER & SEWER ─────────────────────────────────────────────
+  {id:'sewer-basic', cat:'Water & Sewer (External)', icon:'🚰', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Ext. Sewer & Water Line – BASIC', price:9.99,
+   tags:['30-day wait','$5k/term','$500 landscape'],
+   preview:'External water & sewer/septic line repair + $500 landscape allowance',
+   covers:['External water line repair','External sewer or septic line repair','Up to $500/term landscape damage allowance']},
+  {id:'sewer-deluxe', cat:'Water & Sewer (External)', icon:'🚰', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Ext. Sewer & Water Line – DELUXE', price:15.99,
+   tags:['30-day wait','$5k/term','$5k concrete + $500 landscape'],
+   preview:'External water & sewer/septic + concrete restoration + landscape',
+   covers:['External water line repair','External sewer or septic line repair','Up to $5,000/term concrete restoration','Up to $500/term landscape allowance']},
+
+  // ── PERSONAL ELECTRONICS ─────────────────────────────────────
+  {id:'elec-personal', cat:'Personal Electronics', icon:'💻', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Personal Electronics Repair Plan', price:19.99,
+   tags:['30-day wait','$2k/claim','$5k aggregate','Unlimited devices'],
+   preview:'TVs, laptops, consoles, smart devices — unlimited devices, no age/brand limit',
+   covers:['Televisions','Laptops & computers','Gaming consoles','Smart devices & cameras','Audio systems','No brand or age restriction']},
+  {id:'elec-mobile', cat:'Personal Electronics', icon:'📱', planUnits:1, fixedPrice:false, bestSeller:false,
+   name:'Personal Electronics + Mobile Devices', price:34.99,
+   tags:['30-day wait','$2k/claim','$5k aggregate','Unlimited phones'],
+   preview:'Everything in Electronics + unlimited mobile phones & tablets',
+   covers:['Everything in Personal Electronics plan','Unlimited mobile phones & tablets','No brand or age restriction']}
+];
+
+// ═══ STATE ═══════════════════════════════════════════
+var selected = new Set();
+var manualDisc = {}; // planId -> 0|10|15
+
+// ═══ HELPERS ═════════════════════════════════════════
+function totalUnits() {
+  return PLANS.reduce(function(n,p){ return selected.has(p.id) ? n+p.planUnits : n; }, 0);
+}
+function autoDiscRate() {
+  var n = totalUnits();
+  return n>=3 ? 0.15 : n===2 ? 0.10 : 0;
+}
+function effectiveDisc(p) {
+  if(!selected.has(p.id)) return 0;
+  // Manual always wins if set
+  var m = manualDisc[p.id]||0;
+  if(m>0) return m/100;
+  // Fixed price plans: no auto-discount applied to their price
+  if(p.fixedPrice) return 0;
+  return autoDiscRate();
+}
+function discountedPrice(p) { return p.price*(1-effectiveDisc(p)); }
+
+// ═══ BUILD BEST SELLERS ══════════════════════════════
+function buildBS() {
+  var bsPlans = PLANS.filter(function(p){return p.bestSeller;}).sort(function(a,b){return a.bsRank-b.bsRank;});
+  document.getElementById('bs-grid').innerHTML = bsPlans.map(function(p) {
+    var covHtml = p.covers.map(function(c){return '<li>'+c+'</li>';}).join('');
+    return '<div class="bs-card" id="bs-'+p.id+'" onclick="togglePlan(\''+p.id+'\')">' +
+      '<div class="bs-check">✓</div>' +
+      '<div class="bs-num">0'+p.bsRank+'</div>' +
+      '<span class="bs-icon">'+p.icon+'</span>' +
+      '<div class="bs-name">'+p.name+'</div>' +
+      '<div class="bs-why">'+p.bsWhy+'</div>' +
+      '<div class="bs-footer">' +
+        '<div class="bs-price-block">' +
+          '<div class="bs-strike" id="bs-strike-'+p.id+'"></div>' +
+          '<div class="bs-disc-price" id="bs-disc-'+p.id+'"></div>' +
+          '<div class="bs-orig" id="bs-orig-'+p.id+'">$'+p.price.toFixed(2)+'<span class="mo">/mo</span></div>' +
+        '</div>' +
+        '<div class="bs-meta">'+p.tags.slice(0,2).join('<br>')+'</div>' +
+      '</div>' +
+      // coverage — shows when selected
+      '<div class="bs-coverage"><ul class="bs-cov-list">'+covHtml+'</ul></div>' +
+      // manual discount — shows when selected
+      '<div class="bs-manual" onclick="event.stopPropagation()">' +
+        '<span class="bs-manual-lbl">Discount:</span>' +
+        '<div class="disc-btns">' +
+          '<button class="db" id="bsdb10-'+p.id+'" onclick="setDisc(event,\''+p.id+'\',10)">10%</button>' +
+          '<button class="db" id="bsdb15-'+p.id+'" onclick="setDisc(event,\''+p.id+'\',15)">15%</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+// ═══ BUILD ALL PLANS ═════════════════════════════════
+function buildAll() {
+  var cats = [];
+  PLANS.forEach(function(p){if(cats.indexOf(p.cat)===-1) cats.push(p.cat);});
+  document.getElementById('all-container').innerHTML = cats.map(function(cat) {
+    var catPs = PLANS.filter(function(p){return p.cat===cat;});
+    var slug = cat.replace(/[^a-z0-9]/gi,'_').toLowerCase();
+    var cards = catPs.map(function(p) {
+      var isCombo = p.planUnits > 1;
+      var comboTag = isCombo ? '<div class="pc-combo-tag">Combo · '+p.planUnits+' plan units</div>' : '';
+      var tags = p.tags.map(function(t){
+        var c='tl';
+        if(t.indexOf('wait')>-1)c='tw';
+        else if(t.toLowerCase().indexOf('tune-up')>-1||t.toLowerCase().indexOf('maintenance')>-1)c='tm';
+        else if(t.indexOf('replacement')>-1)c='tp';
+        return '<span class="tag '+c+'">'+t+'</span>';
+      }).join('');
+      var covHtml = p.covers.map(function(c){return '<li>'+c+'</li>';}).join('');
+      return '<div class="plan-card" id="card-'+p.id+'" onclick="togglePlan(\''+p.id+'\')">' +
+        '<div class="pc-check">✓</div>' +
+        '<div>' +
+          comboTag +
+          '<div class="pc-name">'+p.name+'</div>' +
+          '<div class="pc-preview">'+p.preview+'</div>' +
+          '<div class="pc-tags">'+tags+'</div>' +
+          // coverage — auto-shows when selected
+          '<div class="pc-coverage"><ul class="pc-cov-list">'+covHtml+'</ul></div>' +
+          // manual discount
+          '<div class="pc-manual" onclick="event.stopPropagation()">' +
+            '<span class="pc-manual-lbl">Discount:</span>' +
+            '<div class="disc-btns">' +
+              '<button class="db" id="db10-'+p.id+'" onclick="setDisc(event,\''+p.id+'\',10)">10%</button>' +
+              '<button class="db" id="db15-'+p.id+'" onclick="setDisc(event,\''+p.id+'\',15)">15%</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="pc-right">' +
+          '<div class="pr-strike" id="strike-'+p.id+'"></div>' +
+          '<div class="pr-disc" id="disc-'+p.id+'"></div>' +
+          '<div class="pr-orig" id="orig-'+p.id+'">$'+p.price.toFixed(2)+'<span class="pr-mo">/mo</span></div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    return '<div class="cat-block" id="cat-'+slug+'">' +
+      '<div class="cat-head" onclick="toggleCat(\''+slug+'\')">' +
+        '<span class="cat-ico">'+catPs[0].icon+'</span>' +
+        '<span class="cat-lbl">'+cat+'</span>' +
+        '<span class="cat-n">'+catPs.length+' plans</span>' +
+        '<span class="cat-arr">▼</span>' +
+      '</div>' +
+      '<div class="cat-plans">'+cards+'</div>' +
+    '</div>';
+  }).join('');
+}
+
+// ═══ TOGGLE ══════════════════════════════════════════
+function togglePlan(id) {
+  if(selected.has(id)){ selected.delete(id); delete manualDisc[id]; }
+  else selected.add(id);
+  render();
+}
+function toggleCat(slug){ document.getElementById('cat-'+slug).classList.toggle('closed'); }
+
+function setDisc(e, id, pct) {
+  e.stopPropagation();
+  if(!selected.has(id)) return;
+  manualDisc[id] = (manualDisc[id]===pct) ? 0 : pct;
+  render();
+}
+
+// ═══ RENDER ══════════════════════════════════════════
+function render() {
+  var autoRate = autoDiscRate();
+  var allSel = PLANS.filter(function(p){return selected.has(p.id);});
+
+  PLANS.forEach(function(p) {
+    var isSel = selected.has(p.id);
+    var eff = effectiveDisc(p);
+    var finalP = p.price*(1-eff);
+    var m = manualDisc[p.id]||0;
+
+    // ── All Plans card ──
+    var card = document.getElementById('card-'+p.id);
+    if(card) {
+      card.classList.toggle('selected', isSel);
+      var dEl=document.getElementById('disc-'+p.id);
+      var sEl=document.getElementById('strike-'+p.id);
+      var oEl=document.getElementById('orig-'+p.id);
+      if(isSel && eff>0){
+        dEl.style.display='block'; dEl.textContent='$'+finalP.toFixed(2)+'/mo';
+        sEl.style.display='block'; sEl.textContent='$'+p.price.toFixed(2);
+        oEl.style.display='none';
+      } else {
+        dEl.style.display='none'; sEl.style.display='none';
+        if(oEl) oEl.style.display='block';
+      }
+      // manual buttons
+      var b10=document.getElementById('db10-'+p.id);
+      var b15=document.getElementById('db15-'+p.id);
+      if(b10){ b10.className='db'+(m===10?' on10':''); }
+      if(b15){ b15.className='db'+(m===15?' on15':''); }
+    }
+
+    // ── Best Seller card ──
+    var bsc=document.getElementById('bs-'+p.id);
+    if(bsc){
+      bsc.classList.toggle('selected', isSel);
+      var bsO=document.getElementById('bs-orig-'+p.id);
+      var bsD=document.getElementById('bs-disc-'+p.id);
+      var bsS=document.getElementById('bs-strike-'+p.id);
+      if(isSel && eff>0){
+        if(bsD){bsD.style.display='block'; bsD.innerHTML='$'+finalP.toFixed(2)+'<span class="mo">/mo</span>';}
+        if(bsS){bsS.style.display='block'; bsS.textContent='$'+p.price.toFixed(2);}
+        if(bsO) bsO.style.display='none';
+      } else {
+        if(bsD) bsD.style.display='none';
+        if(bsS) bsS.style.display='none';
+        if(bsO){bsO.style.display='block'; bsO.innerHTML='$'+p.price.toFixed(2)+'<span class="mo">/mo</span>';}
+      }
+      var bb10=document.getElementById('bsdb10-'+p.id);
+      var bb15=document.getElementById('bsdb15-'+p.id);
+      if(bb10) bb10.className='db'+(m===10?' on10':'');
+      if(bb15) bb15.className='db'+(m===15?' on15':'');
+    }
+  });
+
+  // ── Summary ──
+  var n = totalUnits();
+  document.getElementById('cnt-n').textContent = n;
+  var hint='plan units selected';
+  if(n===1) hint='plan unit · add 1 more for 10% OFF';
+  else if(n===2) hint='plan units · 10% OFF · 1 more for 15%';
+  else if(n>=3) hint='plan units · 🎉 15% OFF applied!';
+  document.getElementById('cnt-h').textContent = hint;
+
+  ['ds0','ds1','ds2'].forEach(function(id,i){
+    var el=document.getElementById(id);
+    el.classList.remove('on','gold');
+    if(n===i+1&&i<2) el.classList.add('on');
+    if(n>=3&&i===2) el.classList.add('gold');
+  });
+
+  document.getElementById('empty').style.display = allSel.length===0?'block':'none';
+  document.getElementById('totals').style.display = allSel.length===0?'none':'block';
+
+  // Auto-discount banner: show only if any non-fixed plan gets the auto rate
+  var hasAuto = allSel.some(function(p){ return !p.fixedPrice && (manualDisc[p.id]||0)===0 && autoRate>0; });
+  var banner=document.getElementById('disc-banner');
+  if(hasAuto){ banner.classList.add('show'); document.getElementById('db-pct').textContent=(autoRate===0.15?'15% OFF — 3+ plan units':'10% OFF — 2 plan units'); }
+  else banner.classList.remove('show');
+
+  // Selected items list
+  document.getElementById('sel-list').innerHTML = allSel.map(function(p){
+    var eff=effectiveDisc(p);
+    var finalP=p.price*(1-eff);
+    var m=manualDisc[p.id]||0;
+    var sub = '';
+    if(p.planUnits>1) sub='<div class="si-sub">'+p.planUnits+' plan units</div>';
+    var m10=m===10?' on10':''; var m15=m===15?' on15':'';
+    return '<div class="sel-item">' +
+      '<div class="si-top">' +
+        '<div><div class="si-name">'+p.name+'</div>'+sub+'</div>' +
+        '<div class="si-prices">' +
+          (eff>0?'<div class="si-orig-sm">$'+p.price.toFixed(2)+'</div>':'')+
+          '<div class="si-final'+(eff>0?' green':'')+'">$'+finalP.toFixed(2)+'/mo</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="si-manual" onclick="event.stopPropagation()">' +
+        '<span class="si-manual-lbl">Discount:</span>' +
+        '<div class="disc-btns">' +
+          '<button class="db'+m10+'" onclick="setDisc(event,\''+p.id+'\',10)">10%</button>' +
+          '<button class="db'+m15+'" onclick="setDisc(event,\''+p.id+'\',15)">15%</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  // Totals
+  var subtotal=allSel.reduce(function(s,p){return s+p.price;},0);
+  var total=allSel.reduce(function(s,p){return s+discountedPrice(p);},0);
+  var savings=subtotal-total;
+  document.getElementById('t-sub').textContent='$'+subtotal.toFixed(2);
+  var sr=document.getElementById('t-save-row');
+  sr.style.display=savings>0.005?'flex':'none';
+  document.getElementById('t-save').textContent='-$'+savings.toFixed(2);
+  document.getElementById('grand').textContent=total.toFixed(2);
+}
+
+// ═══ FILTER ══════════════════════════════════════════
+function filterPlans(){
+  var q=document.getElementById('search').value.toLowerCase().trim();
+  PLANS.forEach(function(p){
+    var card=document.getElementById('card-'+p.id);
+    if(!card) return;
+    var hay=[p.name,p.cat,p.preview].concat(p.covers).concat(p.tags).join(' ').toLowerCase();
+    card.classList.toggle('hidden',q.length>0&&hay.indexOf(q)===-1);
+  });
+  document.querySelectorAll('.cat-block').forEach(function(b){
+    var vis=b.querySelectorAll('.plan-card:not(.hidden)').length;
+    b.classList.toggle('closed',q.length>0&&vis===0);
+    if(!q) b.classList.remove('closed');
+  });
+}
+
+// ═══ TAB ═════════════════════════════════════════════
+function switchTab(t){
+  var hot=t==='hot';
+  document.getElementById('tab-hot-btn').classList.toggle('active',hot);
+  document.getElementById('tab-all-btn').classList.toggle('active',!hot);
+  document.getElementById('tab-hot-content').classList.toggle('show',hot);
+  document.getElementById('tab-all-content').classList.toggle('show',!hot);
+}
+
+// ═══ RESET ═══════════════════════════════════════════
+function resetAll(){ selected.clear(); manualDisc={}; render(); }
+
+// ═══ INIT ════════════════════════════════════════════
+buildBS(); buildAll(); render();
+</script>
+</body>
+</html>
