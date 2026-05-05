@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NRGP Protects — Quote Tool</title>
+<title>NRG Tools</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -13,7 +13,8 @@
   --blue:#4f8eff;--blue-dim:rgba(79,142,255,.12);
   --green:#23d18b;--green-dim:rgba(35,209,139,.1);
   --amber:#f0b429;--amber-dim:rgba(240,180,41,.1);
-  --red:#ff4d6d;--purple:#b48eff;
+  --red:#ff4d6d;--red-dim:rgba(255,77,109,.1);
+  --purple:#b48eff;--purple-dim:rgba(180,142,255,.1);
   --t0:#eef2ff;--t1:#99b0cc;--t2:#4e6180;--t3:#283448;
   --r:10px;
 }
@@ -21,45 +22,41 @@ html{scroll-behavior:smooth}
 body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--t0);min-height:100vh;overflow-x:hidden}
 
 /* NAV */
-nav{position:sticky;top:0;z-index:300;background:rgba(7,9,13,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:52px;padding:0 28px;display:flex;align-items:center;gap:14px}
-.logo{display:flex;align-items:center;gap:10px}
-.logo-mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#4f8eff,#2a5fcc);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#fff;box-shadow:0 0 14px rgba(79,142,255,.25)}
+nav{position:sticky;top:0;z-index:400;background:rgba(7,9,13,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:52px;padding:0 24px;display:flex;align-items:center;gap:12px}
+.logo{display:flex;align-items:center;gap:9px}
+.logo-mark{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,#4f8eff,#2a5fcc);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#fff;box-shadow:0 0 12px rgba(79,142,255,.25)}
 .logo-name{font-family:'Familjen Grotesk',sans-serif;font-weight:700;font-size:15px}
 .logo-name em{color:var(--blue);font-style:normal}
 .nav-sep{width:1px;height:18px;background:var(--border)}
-.nav-sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t2);letter-spacing:.12em;text-transform:uppercase}
-.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);flex-shrink:0}
-.nav-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t2)}
+.nav-tabs{display:flex;gap:2px}
+.nav-tab{display:flex;align-items:center;gap:6px;padding:6px 13px;border:none;background:none;color:var(--t2);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;cursor:pointer;border-radius:7px;transition:all .15s;border:1px solid transparent;white-space:nowrap}
+.nav-tab:hover{color:var(--t1);background:var(--s1)}
+.nav-tab.active{color:var(--t0);background:var(--s2);border-color:var(--border)}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:7px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)}
+.nav-ver{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3)}
 
-/* LAYOUT */
+/* PAGES */
+.page{display:none;min-height:calc(100vh - 52px)}
+.page.active{display:block}
+
+/* ── PAGE 1: QUOTE TOOL ── */
 .wrap{max-width:1420px;margin:0 auto;padding:20px;display:grid;grid-template-columns:1fr 374px;gap:18px;align-items:start}
-
-/* TABS */
 .tabs{display:flex;gap:4px;margin-bottom:14px;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:4px}
 .tab-btn{flex:1;padding:7px 10px;border:none;border-radius:7px;background:none;color:var(--t2);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px}
 .tab-btn:hover{color:var(--t1)}
 .tab-btn.active{background:var(--s3);color:var(--t0);border:1px solid var(--border2)}
 .hot-pill{background:rgba(240,180,41,.15);color:var(--amber);border:1px solid rgba(240,180,41,.3);border-radius:4px;padding:1px 6px;font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:600}
-#tab-hot-content{display:none}
-#tab-hot-content.show,#tab-all-content.show{display:block}
-
-/* SEARCH */
 .search-wrap{position:relative;margin-bottom:12px}
 .search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--t3);pointer-events:none}
 .search-wrap input{width:100%;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:9px 13px 9px 36px;color:var(--t0);font-family:'Space Grotesk',sans-serif;font-size:13px;outline:none;transition:border-color .15s}
 .search-wrap input::placeholder{color:var(--t3)}
 .search-wrap input:focus{border-color:var(--border2)}
-
-/* BEST SELLERS */
 .bs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media(max-width:620px){.bs-grid{grid-template-columns:1fr}}
-
 .bs-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:16px 16px 14px;cursor:pointer;position:relative;transition:background .15s,border-color .15s,transform .12s;overflow:hidden}
-.bs-card::after{content:'';position:absolute;inset:0;opacity:0;border-radius:var(--r);box-shadow:inset 0 0 0 1px var(--blue);transition:opacity .2s;pointer-events:none}
 .bs-card:hover{background:var(--s2);transform:translateY(-2px)}
 .bs-card.selected{background:var(--blue-dim);border-color:var(--blue)}
-.bs-card.selected::after{opacity:1}
 .bs-check{position:absolute;top:11px;right:11px;width:19px;height:19px;border-radius:50%;background:var(--blue);display:none;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700}
 .bs-card.selected .bs-check{display:flex}
 .bs-num{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:.08em;margin-bottom:10px}
@@ -67,22 +64,17 @@ nav{position:sticky;top:0;z-index:300;background:rgba(7,9,13,.96);backdrop-filte
 .bs-name{font-family:'Familjen Grotesk',sans-serif;font-weight:600;font-size:14px;line-height:1.3;margin-bottom:5px}
 .bs-why{font-size:11px;color:var(--t1);line-height:1.55;margin-bottom:12px}
 .bs-footer{display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
-.bs-price-block{}
 .bs-orig{font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:600;line-height:1}
 .bs-orig .mo{font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:400;color:var(--t2);margin-left:1px}
 .bs-disc-price{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;color:var(--green);display:none}
 .bs-disc-price .mo{font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:400;color:var(--t1)}
 .bs-strike{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);text-decoration:line-through;display:none;margin-bottom:2px}
 .bs-meta{font-size:10px;color:var(--t2);text-align:right;max-width:100px;line-height:1.5}
-
-/* COVERAGE POPUP inside BS card */
 .bs-coverage{display:none;margin-top:12px;padding-top:11px;border-top:1px solid var(--border)}
 .bs-card.selected .bs-coverage{display:block}
 .bs-cov-list{list-style:none;display:flex;flex-direction:column;gap:4px}
 .bs-cov-list li{font-size:11px;color:var(--t1);padding-left:13px;position:relative;line-height:1.5}
 .bs-cov-list li::before{content:'·';position:absolute;left:2px;color:var(--blue);font-size:14px;line-height:1}
-
-/* MANUAL DISC — best sellers */
 .bs-manual{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);align-items:center;gap:6px}
 .bs-card.selected .bs-manual{display:flex}
 .bs-manual-lbl{font-size:10px;color:var(--t2);flex:1}
@@ -91,8 +83,6 @@ nav{position:sticky;top:0;z-index:300;background:rgba(7,9,13,.96);backdrop-filte
 .db:hover{color:var(--t1);border-color:var(--t2)}
 .db.on10{border-color:var(--blue);background:var(--blue-dim);color:var(--blue)}
 .db.on15{border-color:var(--green);background:var(--green-dim);color:var(--green)}
-
-/* CATEGORY */
 .cat-block{margin-bottom:4px}
 .cat-head{display:flex;align-items:center;gap:9px;padding:8px 12px;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;user-select:none;margin-bottom:3px;transition:border-color .15s}
 .cat-head:hover{border-color:var(--border2)}
@@ -103,15 +93,13 @@ nav{position:sticky;top:0;z-index:300;background:rgba(7,9,13,.96);backdrop-filte
 .cat-block.closed .cat-arr{transform:rotate(-90deg)}
 .cat-block.closed .cat-plans{display:none}
 .cat-plans{display:flex;flex-direction:column;gap:3px;margin-bottom:6px;padding-left:2px}
-
-/* PLAN CARD */
 .plan-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;position:relative;transition:background .14s,border-color .14s}
 .plan-card:hover{background:var(--s2);border-color:var(--border2)}
 .plan-card.selected{background:var(--blue-dim);border-color:var(--blue)}
 .plan-card.hidden{display:none}
 .pc-check{position:absolute;top:-5px;right:-5px;width:17px;height:17px;border-radius:50%;background:var(--blue);display:none;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;box-shadow:0 0 0 2px var(--bg)}
 .plan-card.selected .pc-check{display:flex}
-.pc-combo-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 6px;border-radius:3px;background:rgba(180,142,255,.1);color:var(--purple);border:1px solid rgba(180,142,255,.2);margin-bottom:5px}
+.pc-combo-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 6px;border-radius:3px;background:var(--purple-dim);color:var(--purple);border:1px solid rgba(180,142,255,.2);margin-bottom:5px}
 .pc-name{font-family:'Familjen Grotesk',sans-serif;font-weight:600;font-size:13px;margin-bottom:3px;line-height:1.3}
 .pc-preview{font-size:11.5px;color:var(--t1);line-height:1.5;margin-bottom:6px}
 .pc-tags{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:2px}
@@ -120,27 +108,19 @@ nav{position:sticky;top:0;z-index:300;background:rgba(7,9,13,.96);backdrop-filte
 .tl{background:rgba(79,142,255,.07);color:#4e80d8;border:1px solid rgba(79,142,255,.15)}
 .tm{background:rgba(35,209,139,.07);color:#1a9060;border:1px solid rgba(35,209,139,.15)}
 .tp{background:rgba(180,142,255,.07);color:#8870cc;border:1px solid rgba(180,142,255,.15)}
-
-/* COVERAGE inside plan card */
 .pc-coverage{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
 .plan-card.selected .pc-coverage{display:block}
 .pc-cov-list{list-style:none;display:flex;flex-direction:column;gap:4px}
 .pc-cov-list li{font-size:11px;color:var(--t1);padding-left:13px;position:relative;line-height:1.5}
 .pc-cov-list li::before{content:'·';position:absolute;left:2px;color:var(--blue);font-size:14px;line-height:1}
-
-/* MANUAL DISC inside plan card */
 .pc-manual{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);align-items:center;gap:6px}
 .plan-card.selected .pc-manual{display:flex}
 .pc-manual-lbl{font-size:10px;color:var(--t2);flex:1}
-
-/* PRICE right col */
 .pc-right{text-align:right;flex-shrink:0;min-width:68px;display:flex;flex-direction:column;align-items:flex-end;gap:1px}
 .pr-strike{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);text-decoration:line-through;display:none}
 .pr-disc{font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--green);display:none;line-height:1}
 .pr-orig{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:500;line-height:1}
 .pr-mo{font-size:10px;color:var(--t2);font-family:'Space Grotesk',sans-serif;font-weight:400}
-
-/* SUMMARY */
 .summary{position:sticky;top:60px;background:var(--s0);border:1px solid var(--border);border-radius:14px;overflow:hidden}
 .sum-head{background:linear-gradient(150deg,#0c1422,#101828);border-bottom:1px solid var(--border);padding:18px 20px}
 .sum-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t2);letter-spacing:.14em;text-transform:uppercase;margin-bottom:5px}
@@ -153,15 +133,12 @@ nav{position:sticky;top:0;z-index:300;background:rgba(7,9,13,.96);backdrop-filte
 .ds.on .ds-n{color:var(--blue)}
 .ds.gold .ds-n{color:var(--amber)}
 .ds-lbl{font-size:9.5px;color:var(--t3);margin-top:2px}
-
 .sum-body{padding:16px 20px}
 .cnt-row{display:flex;align-items:center;gap:8px;margin-bottom:14px}
 .cnt-n{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--s2);border:1px solid var(--border);border-radius:5px;padding:2px 10px;color:var(--blue);min-width:28px;text-align:center}
 .cnt-h{font-size:11px;color:var(--t2)}
 .empty{text-align:center;padding:28px 0;color:var(--t3);font-size:12px;line-height:1.8}
 .empty-i{font-size:28px;opacity:.2;margin-bottom:8px}
-
-/* SELECTED LIST */
 .sel-list{display:flex;flex-direction:column}
 .sel-item{padding:10px 0;border-bottom:1px solid var(--border);animation:fdin .15s ease}
 @keyframes fdin{from{opacity:0;transform:translateX(4px)}to{opacity:1;transform:none}}
@@ -173,11 +150,8 @@ nav{position:sticky;top:0;z-index:300;background:rgba(7,9,13,.96);backdrop-filte
 .si-orig-sm{font-size:10px;color:var(--t3);text-decoration:line-through}
 .si-final{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500}
 .si-final.green{color:var(--green)}
-/* manual in summary */
 .si-manual{display:flex;align-items:center;gap:6px;margin-top:7px}
 .si-manual-lbl{font-size:10px;color:var(--t2);flex:1}
-
-/* TOTALS */
 .disc-banner{display:none;align-items:center;gap:8px;border:1px solid rgba(240,180,41,.2);background:var(--amber-dim);border-radius:7px;padding:8px 10px;margin:10px 0}
 .disc-banner.show{display:flex}
 .db-pct{font-family:'Familjen Grotesk',sans-serif;font-weight:700;font-size:13px;color:var(--amber)}
@@ -191,42 +165,142 @@ nav{position:sticky;top:0;z-index:300;background:rgba(7,9,13,.96);backdrop-filte
 .t-note{font-size:10px;color:var(--t3);margin-top:8px;line-height:1.6;font-style:italic}
 .reset-btn{width:100%;margin-top:14px;background:none;border:1px solid var(--border);border-radius:7px;padding:9px;color:var(--t2);font-family:'Space Grotesk',sans-serif;font-size:11.5px;cursor:pointer;transition:all .15s}
 .reset-btn:hover{border-color:var(--red);color:var(--red);background:rgba(255,77,109,.04)}
-
 @media(max-width:960px){.wrap{grid-template-columns:1fr}.summary{position:static}}
+
+/* ── PAGE 2: SALES SCRIPTS ── */
+.script-page{max-width:1100px;margin:0 auto;padding:28px 24px}
+.sp-header{margin-bottom:28px}
+.sp-title{font-family:'Familjen Grotesk',sans-serif;font-weight:700;font-size:24px;margin-bottom:6px}
+.sp-sub{font-size:13px;color:var(--t2);line-height:1.6}
+.scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px}
+@media(max-width:760px){.scenario-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.scenario-grid{grid-template-columns:1fr}}
+.sc-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;cursor:pointer;transition:all .15s;position:relative}
+.sc-card:hover{border-color:var(--border2);background:var(--s2)}
+.sc-card.active{border-color:var(--blue);background:var(--blue-dim)}
+.sc-card.active::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--blue);border-radius:var(--r) var(--r) 0 0}
+.sc-icon{font-size:20px;margin-bottom:8px}
+.sc-name{font-family:'Familjen Grotesk',sans-serif;font-weight:600;font-size:13px;margin-bottom:3px}
+.sc-desc{font-size:11px;color:var(--t2);line-height:1.5}
+.script-panel{background:var(--s1);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.script-panel-head{background:linear-gradient(150deg,#0d1525,#111a2e);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sp-panel-title{font-family:'Familjen Grotesk',sans-serif;font-weight:700;font-size:16px}
+.lang-switch{display:flex;gap:4px}
+.ls-btn{padding:5px 12px;border-radius:5px;border:1px solid var(--border);background:none;color:var(--t2);font-family:'JetBrains Mono',monospace;font-size:10px;cursor:pointer;transition:all .15s}
+.ls-btn.active{border-color:var(--blue);background:var(--blue-dim);color:var(--blue)}
+.script-body{padding:0}
+.script-section{padding:20px;border-bottom:1px solid var(--border)}
+.script-section:last-child{border-bottom:none}
+.ss-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.ss-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.ss-badge{font-size:9px;padding:2px 7px;border-radius:3px;font-family:'JetBrains Mono',monospace}
+.badge-open{background:rgba(79,142,255,.1);color:var(--blue);border:1px solid rgba(79,142,255,.2)}
+.badge-prove{background:rgba(240,180,41,.1);color:var(--amber);border:1px solid rgba(240,180,41,.2)}
+.badge-obj{background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.2)}
+.badge-close{background:rgba(35,209,139,.1);color:var(--green);border:1px solid rgba(35,209,139,.2)}
+.script-text{font-size:13px;color:var(--t1);line-height:1.8;font-style:italic}
+.script-text strong{color:var(--t0);font-style:normal}
+.script-note{font-size:11px;color:var(--t2);margin-top:8px;padding:8px 10px;background:var(--s2);border-radius:6px;border-left:2px solid var(--border2)}
+.objections-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+@media(max-width:640px){.objections-grid{grid-template-columns:1fr}}
+.obj-card{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+.obj-q{font-size:11.5px;color:var(--red);font-weight:600;margin-bottom:6px}
+.obj-a{font-size:11.5px;color:var(--t1);line-height:1.6;font-style:italic}
+
+/* ── PAGE 3: TERMS ── */
+.terms-page{max-width:960px;margin:0 auto;padding:28px 24px}
+.terms-header{margin-bottom:24px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.terms-title{font-family:'Familjen Grotesk',sans-serif;font-weight:700;font-size:24px;margin-bottom:4px}
+.terms-subtitle{font-size:12px;color:var(--t2)}
+.terms-lang-switch{display:flex;gap:4px;background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:4px}
+.tls-btn{padding:7px 16px;border-radius:5px;border:none;background:none;color:var(--t2);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s}
+.tls-btn.active{background:var(--s3);color:var(--t0);border:1px solid var(--border2)}
+.terms-notice{background:var(--amber-dim);border:1px solid rgba(240,180,41,.25);border-radius:9px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:flex-start;gap:10px}
+.terms-notice-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.terms-notice-text{font-size:11.5px;color:var(--t1);line-height:1.6}
+.terms-content{display:none}
+.terms-content.active{display:block}
+.terms-section{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:10px}
+.terms-section-head{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.ts-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);background:var(--blue-dim);border:1px solid rgba(79,142,255,.2);border-radius:4px;padding:2px 8px}
+.ts-title{font-family:'Familjen Grotesk',sans-serif;font-weight:600;font-size:14px;flex:1}
+.ts-arr{color:var(--t3);font-size:10px;transition:transform .2s}
+.terms-section.closed .ts-arr{transform:rotate(-90deg)}
+.terms-section.closed .ts-body{display:none}
+.ts-body{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.ts-body p{font-size:12.5px;color:var(--t1);line-height:1.75;margin-bottom:10px}
+.ts-body p:last-child{margin-bottom:0}
+.ts-body ul{list-style:none;display:flex;flex-direction:column;gap:5px;margin:8px 0}
+.ts-body ul li{font-size:12.5px;color:var(--t1);padding-left:16px;position:relative;line-height:1.6}
+.ts-body ul li::before{content:'–';position:absolute;left:2px;color:var(--t3)}
+.ts-body strong{color:var(--t0);font-weight:600}
+
+/* ── PAGE 4: CALL TIMER ── */
+.timer-page{max-width:820px;margin:0 auto;padding:28px 24px}
+.timer-title{font-family:'Familjen Grotesk',sans-serif;font-weight:700;font-size:24px;margin-bottom:4px}
+.timer-sub{font-size:12.5px;color:var(--t2);line-height:1.6;margin-bottom:20px}
+.call-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.call-top{background:linear-gradient(150deg,#0c1422,#111a2e);border-bottom:1px solid var(--border);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.ct-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.timer-display{font-family:'JetBrains Mono',monospace;font-size:48px;font-weight:600;letter-spacing:4px;line-height:1}
+.timer-display.warn{color:var(--amber)}
+.timer-display.danger{color:var(--red);animation:pulse .8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.timer-status{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);letter-spacing:.08em}
+.timer-status.running{color:var(--green)}
+.call-controls{padding:16px 24px;display:flex;gap:8px;flex-wrap:wrap}
+.tc-btn{flex:1;min-width:100px;padding:10px 16px;border:1px solid var(--border);border-radius:8px;background:none;color:var(--t1);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.tc-btn.start{border-color:var(--green);color:var(--green);background:var(--green-dim)}
+.tc-btn.pause{border-color:var(--amber);color:var(--amber);background:var(--amber-dim)}
+.tc-btn.stop{border-color:var(--red);color:var(--red);background:var(--red-dim)}
+.notes-card,.log-card{background:var(--s1);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px}
+.notes-head,.log-head{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.notes-title,.log-title{font-family:'Familjen Grotesk',sans-serif;font-weight:600;font-size:14px}
+.na-btn,.log-clear{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 10px;border-radius:4px;border:1px solid var(--border);background:none;color:var(--t2);cursor:pointer;transition:all .15s}
+.na-btn:hover{color:var(--t0);border-color:var(--border2)}
+.log-clear:hover{border-color:var(--red);color:var(--red)}
+.na-btn.copy-done{border-color:var(--green);color:var(--green)}
+textarea.call-notes{width:100%;background:none;border:none;outline:none;padding:16px 18px;color:var(--t0);font-family:'Space Grotesk',sans-serif;font-size:13px;line-height:1.7;resize:vertical;min-height:130px}
+textarea.call-notes::placeholder{color:var(--t3)}
+.log-empty{padding:20px;text-align:center;color:var(--t3);font-size:12px}
+.log-list{display:flex;flex-direction:column}
+.log-item{display:flex;align-items:flex-start;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border);animation:fdin .15s ease}
+.log-item:last-child{border-bottom:none}
+.log-duration{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--blue);white-space:nowrap;min-width:52px}
+.log-note-preview{font-size:12px;color:var(--t1);line-height:1.4;flex:1}
+.log-time{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);white-space:nowrap}
 </style>
 </head>
 <body>
 
 <nav>
   <div class="logo">
-    <div class="logo-mark">NP</div>
-    <div class="logo-name">NRGP <em>Protects</em></div>
+    <div class="logo-mark">NRG</div>
+    <div class="logo-name">NRG <em>Tools</em></div>
   </div>
   <div class="nav-sep"></div>
-  <div class="nav-sub">Quote Tool</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" id="ntab-quote" onclick="switchPage('quote',this)">💰 Quote Tool</button>
+    <button class="nav-tab" id="ntab-script" onclick="switchPage('script',this)">🎯 Sales Scripts</button>
+    <button class="nav-tab" id="ntab-terms" onclick="switchPage('terms',this)">📄 Terms & Conditions</button>
+    <button class="nav-tab" id="ntab-timer" onclick="switchPage('timer',this)">⏱ Call Timer</button>
+  </div>
   <div class="nav-right">
     <div class="live-dot"></div>
-    <div class="nav-tag">v3.0</div>
+    <div class="nav-ver">v4.0</div>
   </div>
 </nav>
 
+<!-- PAGE 1: QUOTE TOOL -->
+<div class="page active" id="page-quote">
 <div class="wrap">
-  <!-- LEFT -->
   <div>
     <div class="tabs">
-      <button class="tab-btn active" id="tab-hot-btn" onclick="switchTab('hot')">
-        🔥 Best Sellers <span class="hot-pill">HOT</span>
-      </button>
-      <button class="tab-btn" id="tab-all-btn" onclick="switchTab('all')">
-        📋 All Plans
-      </button>
+      <button class="tab-btn active" id="tab-hot-btn" onclick="switchTab('hot')">🔥 Best Sellers <span class="hot-pill">HOT</span></button>
+      <button class="tab-btn" id="tab-all-btn" onclick="switchTab('all')">📋 All Plans</button>
     </div>
-
-    <div id="tab-hot-content" class="show">
-      <div class="bs-grid" id="bs-grid"></div>
-    </div>
-
-    <div id="tab-all-content">
+    <div id="tab-hot-content"><div class="bs-grid" id="bs-grid"></div></div>
+    <div id="tab-all-content" style="display:none">
       <div class="search-wrap">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10.5 10.5l3 3"/></svg>
         <input type="text" id="search" placeholder="Search plans…" oninput="filterPlans()">
@@ -234,8 +308,6 @@ nav{position:sticky;top:0;z-index:300;background:rgba(7,9,13,.96);backdrop-filte
       <div id="all-container"></div>
     </div>
   </div>
-
-  <!-- SUMMARY -->
   <div class="summary">
     <div class="sum-head">
       <div class="sum-eyebrow">Client Quote</div>
@@ -246,456 +318,549 @@ nav{position:sticky;top:0;z-index:300;background:rgba(7,9,13,.96);backdrop-filte
         <div class="ds" id="ds2"><div class="ds-n">15%</div><div class="ds-lbl">3+ plans</div></div>
       </div>
     </div>
-
     <div class="sum-body">
       <div class="cnt-row">
         <div class="cnt-n" id="cnt-n">0</div>
         <div class="cnt-h" id="cnt-h">plan units selected</div>
       </div>
-
-      <div class="empty" id="empty">
-        <div class="empty-i">🛡️</div>
-        Select plans to build a client quote
-      </div>
-
+      <div class="empty" id="empty"><div class="empty-i">🛡️</div>Select plans to build a client quote</div>
       <div class="sel-list" id="sel-list"></div>
-
       <div class="disc-banner" id="disc-banner">
         <span style="font-size:15px">🎉</span>
-        <div>
-          <div style="font-size:10px;color:var(--t2)">Auto-discount applied</div>
-          <div class="db-pct" id="db-pct">15% OFF</div>
-        </div>
+        <div><div style="font-size:10px;color:var(--t2)">Auto-discount applied</div><div class="db-pct" id="db-pct">15% OFF</div></div>
       </div>
-
       <div class="totals" id="totals" style="display:none">
         <div class="t-row"><span>Subtotal</span><span id="t-sub">$0.00</span></div>
-        <div class="t-row t-green" id="t-save-row" style="display:none">
-          <span>You save</span><span id="t-save">$0.00</span>
-        </div>
-        <div class="t-grand">
-          <div class="tg-lbl">Monthly total</div>
-          <div class="tg-val"><sup>$</sup><span id="grand">0.00</span></div>
-        </div>
+        <div class="t-row t-green" id="t-save-row" style="display:none"><span>You save</span><span id="t-save">$0.00</span></div>
+        <div class="t-grand"><div class="tg-lbl">Monthly total</div><div class="tg-val"><sup>$</sup><span id="grand">0.00</span></div></div>
         <div class="t-note">30-day waiting period on repair plans · No deductibles · No service call fees</div>
       </div>
-
       <button class="reset-btn" onclick="resetAll()">✕  Clear selection</button>
     </div>
   </div>
 </div>
+</div>
+
+<!-- PAGE 2: SALES SCRIPTS -->
+<div class="page" id="page-script">
+<div class="script-page">
+  <div class="sp-header">
+    <div class="sp-title">Sales Scripts & Ice Breakers</div>
+    <div class="sp-sub">Select your scenario. These scripts are built around psychological principles that actually move people — not corporate templates. Adapt them to your voice.</div>
+  </div>
+  <div class="scenario-grid">
+    <div class="sc-card active" onclick="selectScenario('claim',this)"><div class="sc-icon">📞</div><div class="sc-name">After a Claim Call</div><div class="sc-desc">Client called for service — offer protection at the end</div></div>
+    <div class="sc-card" onclick="selectScenario('billing',this)"><div class="sc-icon">💳</div><div class="sc-name">Billing Call</div><div class="sc-desc">Client called about bill — pivot to offering plans</div></div>
+    <div class="sc-card" onclick="selectScenario('coldoffer',this)"><div class="sc-icon">🧊</div><div class="sc-name">Cold Offer / Outbound</div><div class="sc-desc">No prior reason — reaching out to offer protection</div></div>
+    <div class="sc-card" onclick="selectScenario('objno',this)"><div class="sc-icon">🚫</div><div class="sc-name">They Said No</div><div class="sc-desc">They declined — use proving questions to re-engage</div></div>
+    <div class="sc-card" onclick="selectScenario('maybe',this)"><div class="sc-icon">🤔</div><div class="sc-name">They're Unsure</div><div class="sc-desc">On the fence — guide them with the right questions</div></div>
+    <div class="sc-card" onclick="selectScenario('close',this)"><div class="sc-icon">✅</div><div class="sc-name">Ready to Close</div><div class="sc-desc">They're interested — smooth close without overselling</div></div>
+  </div>
+  <div class="script-panel">
+    <div class="script-panel-head">
+      <div class="sp-panel-title" id="sp-panel-title">After a Claim Call</div>
+      <div class="lang-switch">
+        <button class="ls-btn active" id="ls-en" onclick="switchScriptLang('en')">🇺🇸 EN</button>
+        <button class="ls-btn" id="ls-es" onclick="switchScriptLang('es')">🇸🇻 ES</button>
+      </div>
+    </div>
+    <div class="script-body" id="script-body"></div>
+  </div>
+</div>
+</div>
+
+<!-- PAGE 3: TERMS -->
+<div class="page" id="page-terms">
+<div class="terms-page">
+  <div class="terms-header">
+    <div>
+      <div class="terms-title">Terms & Conditions</div>
+      <div class="terms-subtitle">NRG Protects — Home Protection Plans</div>
+    </div>
+    <div class="terms-lang-switch">
+      <button class="tls-btn active" onclick="switchTermsLang('en',this)">🇺🇸 English</button>
+      <button class="tls-btn" onclick="switchTermsLang('es',this)">🇸🇻 Español</button>
+    </div>
+  </div>
+  <div class="terms-notice">
+    <div class="terms-notice-icon">⚠️</div>
+    <div class="terms-notice-text"><strong>Preview document.</strong> These are placeholder terms for layout purposes. Official terms & conditions will be added when provided. The structure and layout are final.</div>
+  </div>
+  <!-- ENGLISH -->
+  <div class="terms-content active" id="terms-en">
+    <div class="terms-section" onclick="toggleTerms(this)">
+      <div class="terms-section-head"><span class="ts-num">01</span><span class="ts-title">Agreement Overview</span><span class="ts-arr">▼</span></div>
+      <div class="ts-body"><p>This Service Agreement ("Agreement") is entered into between NRG Protects ("Company") and the customer ("Member") identified in the enrollment confirmation. By enrolling, the Member agrees to all terms and conditions herein.</p><p>This Agreement covers the repair and/or replacement of covered systems and appliances as described in the Member's selected plan(s), subject to the limitations and exclusions stated in this document.</p></div>
+    </div>
+    <div class="terms-section" onclick="toggleTerms(this)">
+      <div class="terms-section-head"><span class="ts-num">02</span><span class="ts-title">Coverage & Service</span><span class="ts-arr">▼</span></div>
+      <div class="ts-body"><p>NRG Protects will arrange for a qualified technician to repair or replace covered components that fail due to normal wear. Coverage is subject to:</p><ul><li>A 30-day waiting period applies to all repair services from enrollment date</li><li>Maintenance and tune-up services have no waiting period</li><li>Coverage limited to $500 per service call and $2,000 annually unless otherwise specified</li><li>No deductibles and no service call fees on covered repairs</li><li>Coverage applies to residential properties only</li></ul></div>
+    </div>
+    <div class="terms-section" onclick="toggleTerms(this)">
+      <div class="terms-section-head"><span class="ts-num">03</span><span class="ts-title">Exclusions</span><span class="ts-arr">▼</span></div>
+      <div class="ts-body"><p>This Agreement does not cover:</p><ul><li>Pre-existing conditions known to the Member at enrollment</li><li>Damage from misuse, abuse, neglect, or intentional acts</li><li>Cosmetic defects including dents, scratches, or discoloration</li><li>Filters, refrigerants, or consumable parts</li><li>Damage from natural disasters, floods, fires, or acts of God</li><li>Improper installation or modifications not by licensed contractors</li><li>Commercial use of covered equipment</li></ul></div>
+    </div>
+    <div class="terms-section" onclick="toggleTerms(this)">
+      <div class="terms-section-head"><span class="ts-num">04</span><span class="ts-title">Term & Renewal</span><span class="ts-arr">▼</span></div>
+      <div class="ts-body"><p>This Agreement is effective for <strong>12 months</strong> from enrollment and renews automatically unless cancelled by either party with 30 days' written notice prior to renewal.</p><p>NRG Protects reserves the right to adjust pricing upon renewal with 30 days' advance notice.</p></div>
+    </div>
+    <div class="terms-section" onclick="toggleTerms(this)">
+      <div class="terms-section-head"><span class="ts-num">05</span><span class="ts-title">Cancellation Policy</span><span class="ts-arr">▼</span></div>
+      <div class="ts-body"><p>Members may cancel at any time by contacting NRG Protects customer service. Cancellations within the first 30 days receive a full refund. After 30 days, a pro-rated refund may be issued minus any service costs incurred.</p></div>
+    </div>
+    <div class="terms-section" onclick="toggleTerms(this)">
+      <div class="terms-section-head"><span class="ts-num">06</span><span class="ts-title">Limitation of Liability</span><span class="ts-arr">▼</span></div>
+      <div class="ts-body"><p>NRG Protects' total liability shall not exceed the total amount paid by the Member during the current term. In no event shall NRG Protects be liable for indirect, incidental, consequential, or punitive damages.</p></div>
+    </div>
+    <div class="terms-section" onclick="toggleTerms(this)">
+      <div class="terms-section-head"><span class="ts-num">07</span><span class="ts-title">Replacement Credit</span><span class="ts-arr">▼</span></div>
+      <div class="ts-body"><p>Where indicated in the selected plan, a replacement credit of <strong>up to $500</strong> may be offered if a covered system is deemed irreparable by the service technician within the plan term. Credits are a one-time benefit per covered unit per term and cannot be combined or transferred.</p></div>
+    </div>
+    <div class="terms-section" onclick="toggleTerms(this)">
+      <div class="terms-section-head"><span class="ts-num">08</span><span class="ts-title">Contact Information</span><span class="ts-arr">▼</span></div>
+      <div class="ts-body"><ul><li><strong>Phone:</strong> 1-855-241-9094</li><li><strong>Hours:</strong> Monday – Friday, 8:00 AM – 8:00 PM CT</li><li><strong>Website:</strong> www.nrgprotects.com</li></ul></div>
+    </div>
+  </div>
+  <!-- SPANISH -->
+  <div class="terms-content" id="terms-es">
+    <div class="terms-section" onclick="toggleTerms(this)">
+      <div class="terms-section-head"><span class="ts-num">01</span><span class="ts-title">Resumen del Acuerdo</span><span class="ts-arr">▼</span></div>
+      <div class="ts-body"><p>Este Acuerdo de Servicio se celebra entre NRG Protects ("Compañía") y el cliente ("Miembro"). Al inscribirse, el Miembro acepta todos los términos y condiciones aquí establecidos.</p><p>Este Acuerdo cubre la reparación y/o reemplazo de sistemas cubiertos según el plan seleccionado, sujeto a las limitaciones y exclusiones indicadas.</p></div>
+    </div>
+    <div class="terms-section" onclick="toggleTerms(this)">
+      <div class="terms-section-head"><span class="ts-num">02</span><span class="ts-title">Cobertura y Servicio</span><span class="ts-arr">▼</span></div>
+      <div class="ts-body"><p>NRG Protects coordinará a un técnico calificado para reparar o reemplazar componentes cubiertos que fallen por desgaste normal. La cobertura está sujeta a:</p><ul><li>Período de espera de 30 días para servicios de reparación desde la inscripción</li><li>Los servicios de mantenimiento no tienen período de espera</li><li>Cobertura limitada a $500 por servicio y $2,000 anuales salvo que se indique lo contrario</li><li>Sin deducibles ni cargos por visita técnica en reparaciones cubiertas</li><li>Solo aplica a propiedades residenciales</li></ul></div>
+    </div>
+    <div class="terms-section" onclick="toggleTerms(this)">
+      <div class="terms-section-head"><span class="ts-num">03</span><span class="ts-title">Exclusiones</span><span class="ts-arr">▼</span></div>
+      <div class="ts-body"><p>Este Acuerdo no cubre:</p><ul><li>Condiciones preexistentes conocidas al momento de la inscripción</li><li>Daños por mal uso, abuso, negligencia o actos intencionales</li><li>Defectos cosméticos como abolladuras, rasguños o decoloración</li><li>Filtros, refrigerantes o piezas consumibles</li><li>Daños por desastres naturales, inundaciones o incendios</li><li>Instalaciones incorrectas no realizadas por contratistas con licencia</li><li>Uso comercial del equipo cubierto</li></ul></div>
+    </div>
+    <div class="terms-section" onclick="toggleTerms(this)">
+      <div class="terms-section-head"><span class="ts-num">04</span><span class="ts-title">Vigencia y Renovación</span><span class="ts-arr">▼</span></div>
+      <div class="ts-body"><p>Este Acuerdo tiene vigencia de <strong>12 meses</strong> y se renueva automáticamente salvo cancelación con 30 días de aviso por escrito. NRG Protects puede ajustar precios al renovar con 30 días de anticipación.</p></div>
+    </div>
+    <div class="terms-section" onclick="toggleTerms(this)">
+      <div class="terms-section-head"><span class="ts-num">05</span><span class="ts-title">Política de Cancelación</span><span class="ts-arr">▼</span></div>
+      <div class="ts-body"><p>Los Miembros pueden cancelar en cualquier momento. Cancelaciones en los primeros 30 días reciben reembolso completo. Después, se emite reembolso proporcional menos costos de servicio incurridos.</p></div>
+    </div>
+    <div class="terms-section" onclick="toggleTerms(this)">
+      <div class="terms-section-head"><span class="ts-num">06</span><span class="ts-title">Limitación de Responsabilidad</span><span class="ts-arr">▼</span></div>
+      <div class="ts-body"><p>La responsabilidad total de NRG Protects no excederá el monto pagado durante el período vigente. En ningún caso será responsable por daños indirectos, incidentales o consecuentes.</p></div>
+    </div>
+    <div class="terms-section" onclick="toggleTerms(this)">
+      <div class="terms-section-head"><span class="ts-num">07</span><span class="ts-title">Crédito de Reemplazo</span><span class="ts-arr">▼</span></div>
+      <div class="ts-body"><p>Donde el plan lo indique, se ofrece crédito de reemplazo de <strong>hasta $500</strong> si el equipo cubierto es declarado irreparable dentro del término. Es un beneficio único por unidad por período, no transferible ni combinable.</p></div>
+    </div>
+    <div class="terms-section" onclick="toggleTerms(this)">
+      <div class="terms-section-head"><span class="ts-num">08</span><span class="ts-title">Información de Contacto</span><span class="ts-arr">▼</span></div>
+      <div class="ts-body"><ul><li><strong>Teléfono:</strong> 1-855-241-9094</li><li><strong>Horario:</strong> Lunes – Viernes, 8:00 AM – 8:00 PM CT</li><li><strong>Sitio web:</strong> www.nrgprotects.com</li></ul></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- PAGE 4: CALL TIMER -->
+<div class="page" id="page-timer">
+<div class="timer-page">
+  <div class="timer-title">Call Timer & Notes</div>
+  <div class="timer-sub">Track call duration, jot down notes, and keep a log — all in one place.</div>
+  <div class="call-card">
+    <div class="call-top">
+      <div>
+        <div class="ct-label">Current Call Duration</div>
+        <div class="timer-display" id="timer-display">00:00:00</div>
+      </div>
+      <div style="text-align:right">
+        <div class="timer-status" id="timer-status">READY</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:6px">Calls today: <span id="calls-today" style="color:var(--t2)">0</span></div>
+        <div style="font-size:11px;color:var(--t3)">Avg duration: <span id="avg-dur" style="color:var(--t2)">—</span></div>
+      </div>
+    </div>
+    <div class="call-controls">
+      <button class="tc-btn start" id="btn-start" onclick="startTimer()">▶ Start Call</button>
+      <button class="tc-btn pause" id="btn-pause" onclick="pauseTimer()" style="display:none">⏸ Pause</button>
+      <button class="tc-btn stop" id="btn-stop" onclick="stopTimer()" style="display:none">⏹ End Call</button>
+      <button class="tc-btn" onclick="resetTimer()">↺ Reset</button>
+    </div>
+  </div>
+  <div class="notes-card">
+    <div class="notes-head">
+      <div class="notes-title">Call Notes</div>
+      <div style="display:flex;gap:6px">
+        <button class="na-btn" id="copy-notes-btn" onclick="copyNotes()">Copy</button>
+        <button class="na-btn" onclick="clearNotes()">Clear</button>
+      </div>
+    </div>
+    <textarea class="call-notes" id="call-notes" placeholder="Type call notes here… customer name, account #, what plan they took, anything relevant."></textarea>
+  </div>
+  <div class="log-card">
+    <div class="log-head">
+      <div class="log-title">Call Log — Today</div>
+      <button class="log-clear" onclick="clearLog()">Clear log</button>
+    </div>
+    <div id="log-list"><div class="log-empty">No calls logged yet. End a call to log it.</div></div>
+  </div>
+</div>
+</div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
+// ──────────────────────────────────────────────────
 // PLAN DATA
-//
-// planUnits   = how many units count toward the auto-discount
-//               threshold (2 = counts as 2 eligible plan units)
-// fixedPrice  = price is locked; auto-discount NOT applied to
-//               this plan's price — but it DOES count its planUnits
-//               toward the global threshold so other plans can hit
-//               the 10%/15% tier
-// ═══════════════════════════════════════════════════════════════
+// ──────────────────────────────────────────────────
 var PLANS = [
-
-  // ── BEST SELLERS ─────────────────────────────────────────────
-  {id:'elec-surge', cat:'Electrical', icon:'⚡', planUnits:2, fixedPrice:true, bestSeller:true, bsRank:2,
-   name:'Electrical & Surge Protection Plan', price:10.99,
-   bsWhy:'Electrical repairs + surge protection for all your devices. Fixed bundle price — always $10.99.',
-   tags:['30-day wait','$500/claim electrical','$2k/term surge'],
-   preview:'Wiring, breakers, outlets + surge coverage for appliances, TVs & computers',
-   covers:['Electrical: wiring, breakers, panels, outlets, switches','Doorbells, alarm wiring, smoke & CO detectors (low-voltage)','Surge: major kitchen appliances','Surge: televisions & consumer electronics','Surge: computers & gaming consoles']},
-
-  {id:'plumb-full', cat:'Interior Plumbing', icon:'🔧', planUnits:2, fixedPrice:false, bestSeller:true, bsRank:1,
-   name:'Plumbing, Maint. & Water Heater PLUS', price:27.99,
-   bsWhy:'Top seller. Plumbing repairs + annual tune-up + full water heater coverage with $500 replacement credit.',
+  // BEST SELLERS
+  {id:'elec-surge',cat:'Electrical',icon:'⚡',planUnits:2,fixedPrice:true,bestSeller:true,bsRank:2,
+   name:'Electrical & Surge Protection Bundle',price:10.99,
+   bsWhy:'Electrical repairs + surge protection. Fixed bundle price — always $10.99. Counts as 2 plan units.',
+   tags:['30-day wait','$500/claim electrical','$2k/term surge','BUNDLE'],
+   preview:'Wiring, breakers, outlets + surge for appliances, TVs, computers & gaming',
+   covers:[
+     'ELECTRICAL REPAIR — Wiring & meter boxes (customer-owned)',
+     'Circuit breakers, fuse boxes & electrical panels',
+     'Switches, receptacles & outlets',
+     'Doorbells, alarm system wiring, smoke & CO detectors (low-voltage)',
+     'SURGE PROTECTION — Kitchen: refrigerator, oven/range, dishwasher, built-in microwave',
+     'Surge — Laundry: washer & dryer',
+     'Surge — TVs: smart TVs, OLED, flat screens, monitors (all brands)',
+     'Surge — Computers: laptops, desktops, tablets, routers, printers',
+     'Surge — Gaming: PlayStation, Xbox, Nintendo Switch & accessories',
+     'Limits: $500/claim electrical · $2,000/term surge'
+   ]},
+  {id:'plumb-full',cat:'Interior Plumbing',icon:'🔧',planUnits:2,fixedPrice:false,bestSeller:true,bsRank:1,
+   name:'Plumbing, Maint. & Water Heater PLUS',price:27.99,
+   bsWhy:'#1 seller. Plumbing repairs + annual tune-up + water heater coverage with $500 replacement credit. Counts as 2 plan units.',
    tags:['30-day wait','$500/claim','Tune-up + Water Heater'],
    preview:'Plumbing repairs, 1 annual tune-up, water heater repairs & $500 replacement credit',
-   covers:['Plumbing repairs (excludes fixtures)','1 plumbing tune-up per term','Water heater repairs (tank & tankless)','$500 credit toward water heater replacement if irreparable']},
-
-  {id:'kitchen', cat:'Kitchen & Laundry', icon:'🍳', planUnits:1, fixedPrice:false, bestSeller:true, bsRank:3,
-   name:'Kitchen Repair PLUS', price:24.99,
-   bsWhy:'Covers the 4 main kitchen appliances — refrigerator, oven, dishwasher, microwave — plus $500 replacement.',
+   covers:[
+     'Pipes, valves & joints: copper, PVC, PEX, galvanized interior lines',
+     'Interior shut-off valves & water supply lines',
+     '1 full plumbing tune-up per term (no waiting period for tune-up)',
+     'Water Heater repairs — tank & tankless units',
+     '$500 replacement credit if water heater is irreparable',
+     'Excludes: toilets, faucets, showerheads, sump pumps, well pumps, exterior lines'
+   ]},
+  {id:'kitchen',cat:'Kitchen & Laundry',icon:'🍳',planUnits:1,fixedPrice:false,bestSeller:true,bsRank:3,
+   name:'Kitchen Repair PLUS',price:24.99,
+   bsWhy:'Covers the 4 main kitchen appliances + $500 replacement credit. Easy sell for any homeowner.',
    tags:['30-day wait','$500/claim','+$500 replacement'],
    preview:'Refrigerator, oven/range, dishwasher, built-in microwave + $500 replacement credit',
-   covers:['Range / Oven / Cooktop','Kitchen refrigerator (with ice maker)','Dishwasher','Built-in microwave','$500 replacement credit if irreparable']},
-
-  {id:'laundry', cat:'Kitchen & Laundry', icon:'🧺', planUnits:1, fixedPrice:false, bestSeller:true, bsRank:4,
-   name:'Laundry Room Repair PLUS', price:13.99,
-   bsWhy:'Washer & dryer covered. Great add-on to the Kitchen plan for a full appliance package.',
+   covers:[
+     'Refrigerator — all types: side-by-side, French door, bottom-freezer, built-in, with ice maker',
+     'Oven / Range / Cooktop — gas, electric & induction, freestanding & built-in',
+     'Dishwasher — all built-in residential models',
+     'Built-in Microwave — over-the-range & built-in only (not countertop)',
+     '$500 replacement credit if appliance is deemed irreparable',
+     'Excludes: portable/countertop appliances, plumbing & gas lines to/from units'
+   ]},
+  {id:'laundry',cat:'Kitchen & Laundry',icon:'🧺',planUnits:1,fixedPrice:false,bestSeller:true,bsRank:4,
+   name:'Laundry Room Repair PLUS',price:13.99,
+   bsWhy:'Washer & dryer covered. Great add-on to Kitchen plan for a complete appliance bundle.',
    tags:['30-day wait','$500/claim','+$500 replacement'],
    preview:'Washer & dryer repairs + $500 replacement credit',
-   covers:['Residential clothes washer (all types)','Residential clothes dryer (electric & gas)','$500 replacement credit if irreparable']},
-
-  // ── COOLING ──────────────────────────────────────────────────
-  {id:'cool-repair', cat:'Cooling (A/C)', icon:'❄️', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Cooling – Repair', price:11.99,
-   tags:['30-day wait','$500/claim','$2k annual'],
-   preview:'A/C repairs only',
-   covers:['Central ducted A/C, water evaporative cooler, geothermal','Thermostat & zoning control panel','Excludes: refrigerant, filters, cosmetic parts']},
-  {id:'cool-repair-plus', cat:'Cooling (A/C)', icon:'❄️', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Cooling – Repair PLUS', price:14.99,
-   tags:['30-day wait','$500/claim','+$500 replacement'],
-   preview:'A/C repairs + $500 replacement credit',
-   covers:['Air conditioning repairs','$500 credit toward A/C replacement if irreparable']},
-  {id:'cool-rm', cat:'Cooling (A/C)', icon:'❄️', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Cooling – Repair & Maintenance', price:21.99,
-   tags:['30-day wait','$500/claim','1 tune-up/year'],
-   preview:'A/C repairs + 1 annual tune-up',
-   covers:['Air conditioning repairs','1 A/C tune-up per term (no waiting period for tune-up)']},
-  {id:'cool-rm-plus', cat:'Cooling (A/C)', icon:'❄️', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Cooling – Repair & Maintenance PLUS', price:24.99,
-   tags:['30-day wait','$500/claim','Tune-up + $500 replacement'],
-   preview:'A/C repairs + tune-up + $500 replacement credit',
-   covers:['Air conditioning repairs','1 tune-up per term','$500 credit toward replacement if irreparable']},
-
-  // ── HEATING ──────────────────────────────────────────────────
-  {id:'heat-repair', cat:'Heating', icon:'🔥', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Heating – Repair', price:11.99,
-   tags:['30-day wait','$500/claim','$2k annual'],
-   preview:'Heating repairs only',
-   covers:['Gas furnace, oil/electric heater, boiler, heat pump, geothermal','Thermostat & zoning control panel']},
-  {id:'heat-repair-plus', cat:'Heating', icon:'🔥', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Heating – Repair PLUS', price:14.99,
-   tags:['30-day wait','$500/claim','+$500 replacement'],
+   covers:[
+     'Clothes Washer — top-load, front-load, HE (high-efficiency), all residential brands',
+     'Clothes Dryer — electric & gas dryers, all residential brands',
+     '$500 replacement credit if washer or dryer is irreparable',
+     'Excludes: lint traps, venting systems, plumbing & electrical lines to/from units'
+   ]},
+  // COOLING
+  {id:'cool-repair',cat:'Cooling (A/C)',icon:'❄️',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Cooling – Repair',price:11.99,tags:['30-day wait','$500/claim','$2k annual'],
+   preview:'A/C repairs only — no tune-up included',
+   covers:['Central ducted A/C: compressor, coils, fan motor, capacitors, contactors','Water evaporative cooler & geothermal systems','Thermostat & zoning control panel','Excludes: refrigerant, filters, ductwork, cosmetic parts']},
+  {id:'cool-repair-plus',cat:'Cooling (A/C)',icon:'❄️',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Cooling – Repair PLUS',price:14.99,tags:['30-day wait','$500/claim','+$500 replacement'],
+   preview:'A/C repairs + $500 replacement credit if irreparable',
+   covers:['All A/C system repairs covered','$500 credit toward A/C replacement if irreparable']},
+  {id:'cool-rm',cat:'Cooling (A/C)',icon:'❄️',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Cooling – Repair & Maintenance',price:21.99,tags:['30-day wait','$500/claim','1 tune-up/year'],
+   preview:'A/C repairs + 1 annual professional tune-up',
+   covers:['All A/C repairs covered','1 professional A/C tune-up per term (no waiting period for tune-up)','Tune-up includes: coil cleaning, refrigerant check, electrical inspection, filter check']},
+  {id:'cool-rm-plus',cat:'Cooling (A/C)',icon:'❄️',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Cooling – Repair & Maintenance PLUS',price:24.99,tags:['30-day wait','$500/claim','Tune-up + $500 replacement'],
+   preview:'A/C repairs + annual tune-up + $500 replacement credit',
+   covers:['All A/C repairs covered','1 professional tune-up per term','$500 replacement credit if irreparable']},
+  // HEATING
+  {id:'heat-repair',cat:'Heating',icon:'🔥',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Heating – Repair',price:11.99,tags:['30-day wait','$500/claim','$2k annual'],
+   preview:'Heating system repairs only — no tune-up included',
+   covers:['Gas furnace, oil furnace, electric heater, boiler, heat pump, geothermal','Thermostat & zoning control panel','Excludes: filters, fuel supply lines, flue/exhaust pipes']},
+  {id:'heat-repair-plus',cat:'Heating',icon:'🔥',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Heating – Repair PLUS',price:14.99,tags:['30-day wait','$500/claim','+$500 replacement'],
    preview:'Heating repairs + $500 replacement credit',
-   covers:['Heating system repairs','$500 credit toward replacement if irreparable']},
-  {id:'heat-rm', cat:'Heating', icon:'🔥', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Heating – Repair & Maintenance', price:21.99,
-   tags:['30-day wait','$500/claim','1 tune-up/year'],
-   preview:'Heating repairs + 1 annual tune-up',
-   covers:['Heating system repairs','1 heating tune-up per term']},
-  {id:'heat-rm-plus', cat:'Heating', icon:'🔥', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Heating – Repair & Maintenance PLUS', price:24.99,
-   tags:['30-day wait','$500/claim','Tune-up + $500 replacement'],
+   covers:['All heating system repairs covered','$500 credit toward replacement if irreparable']},
+  {id:'heat-rm',cat:'Heating',icon:'🔥',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Heating – Repair & Maintenance',price:21.99,tags:['30-day wait','$500/claim','1 tune-up/year'],
+   preview:'Heating repairs + 1 annual professional tune-up',
+   covers:['All heating repairs covered','1 heating tune-up per term (no waiting period for tune-up)','Tune-up includes: burner inspection, heat exchanger check, filter check, electrical inspection']},
+  {id:'heat-rm-plus',cat:'Heating',icon:'🔥',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Heating – Repair & Maintenance PLUS',price:24.99,tags:['30-day wait','$500/claim','Tune-up + $500 replacement'],
    preview:'Heating repairs + tune-up + $500 replacement credit',
-   covers:['Heating system repairs','1 tune-up per term','$500 credit toward replacement if irreparable']},
-
-  // ── H&C COMBINED ─────────────────────────────────────────────
-  {id:'hc-maint', cat:'Heating & Cooling Combined', icon:'🌡️', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'H&C – Maintenance Only', price:17.99,
-   tags:['No waiting','2 tune-ups/year'],
-   preview:'2 annual tune-ups for heating & A/C — no repairs',
-   covers:['2 tune-ups per term (one per system)','No repair coverage included']},
-  {id:'hc-repair', cat:'Heating & Cooling Combined', icon:'🌡️', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'H&C – Repair', price:19.99,
-   tags:['30-day wait','$500/claim'],
-   preview:'A/C & Heating repairs',
-   covers:['Air conditioning repairs','Heating system repairs']},
-  {id:'hc-repair-plus', cat:'Heating & Cooling Combined', icon:'🌡️', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'H&C – Repair PLUS', price:22.99,
-   tags:['30-day wait','$500/claim','+$500 replacement'],
+   covers:['All heating repairs covered','1 tune-up per term','$500 replacement credit if irreparable']},
+  // H&C COMBINED
+  {id:'hc-maint',cat:'Heating & Cooling Combined',icon:'🌡️',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'H&C – Maintenance Only',price:17.99,tags:['No waiting','2 tune-ups/year'],
+   preview:'2 annual tune-ups for heating & A/C — no repairs included',
+   covers:['1 A/C tune-up per term — coil cleaning, refrigerant check, electrical inspection','1 Heating tune-up per term — burner check, heat exchanger, filter, controls','No repair coverage — maintenance only']},
+  {id:'hc-repair',cat:'Heating & Cooling Combined',icon:'🌡️',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'H&C – Repair',price:19.99,tags:['30-day wait','$500/claim'],
+   preview:'A/C & Heating repairs — most popular HVAC combo',
+   covers:['Air conditioning repairs: all components','Heating system repairs: all types (furnace, heat pump, boiler, etc.)','$500/claim · $2,000 annual aggregate']},
+  {id:'hc-repair-plus',cat:'Heating & Cooling Combined',icon:'🌡️',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'H&C – Repair PLUS',price:22.99,tags:['30-day wait','$500/claim','+$500 replacement'],
    preview:'A/C & Heating repairs + $500 replacement credit',
-   covers:['A/C & Heating repairs','$500 credit toward system replacement if irreparable']},
-  {id:'hc-rm', cat:'Heating & Cooling Combined', icon:'🌡️', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'H&C – Repair & Maintenance', price:29.99,
-   tags:['30-day wait','$500/claim','2 tune-ups/year'],
-   preview:'A/C & Heating repairs + 2 annual tune-ups',
-   covers:['A/C & Heating repairs','2 tune-ups per term (one per system)']},
-  {id:'hc-rm-plus', cat:'Heating & Cooling Combined', icon:'🌡️', planUnits:2, fixedPrice:false, bestSeller:false,
-   name:'H&C – Repair & Maintenance PLUS', price:32.99,
-   tags:['30-day wait','$500/claim','2 tune-ups + $500 replacement'],
-   preview:'Full HVAC: repairs, 2 tune-ups, $500 replacement credit',
-   covers:['A/C & Heating repairs','2 tune-ups per term (one per system)','$500 credit toward replacement if irreparable']},
-
-  // ── ELECTRICAL INDIVIDUAL ─────────────────────────────────────
-  {id:'elec-repair-only', cat:'Electrical', icon:'⚡', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Electrical Repair Only', price:8.99,
-   tags:['30-day wait','$500/claim'],
+   covers:['A/C & Heating system repairs — all components','$500 replacement credit if system is irreparable']},
+  {id:'hc-rm',cat:'Heating & Cooling Combined',icon:'🌡️',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'H&C – Repair & Maintenance',price:29.99,tags:['30-day wait','$500/claim','2 tune-ups/year'],
+   preview:'A/C & Heating repairs + 2 annual professional tune-ups',
+   covers:['A/C & Heating repairs — all components','1 A/C tune-up per term (no waiting period)','1 Heating tune-up per term (no waiting period)']},
+  {id:'hc-rm-plus',cat:'Heating & Cooling Combined',icon:'🌡️',planUnits:2,fixedPrice:false,bestSeller:false,
+   name:'H&C – Repair & Maintenance PLUS',price:32.99,tags:['30-day wait','$500/claim','2 tune-ups + $500 replacement'],
+   preview:'Full HVAC coverage: repairs, 2 tune-ups, $500 replacement credit',
+   covers:['A/C & Heating repairs — all components','1 A/C tune-up + 1 Heating tune-up per term','$500 replacement credit if system is irreparable']},
+  // ELECTRICAL INDIVIDUAL
+  {id:'elec-repair-only',cat:'Electrical',icon:'⚡',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Electrical Repair Only',price:8.99,tags:['30-day wait','$500/claim'],
    preview:'Wiring, breakers, panels, outlets, switches',
-   covers:['General wiring, meter boxes (customer-owned)','Fuse boxes, circuit breakers, panels','Switches & outlets','Doorbells, alarm wiring, smoke/CO detectors']},
-  {id:'surge-only', cat:'Electrical', icon:'🔌', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Surge Protection Only', price:5.99,
-   tags:['30-day wait','$2k/term'],
-   preview:'Surge coverage: appliances, TVs, computers, gaming',
-   covers:['Major kitchen appliances (surge)','Televisions (surge)','Consumer electronics & computers (surge)','Gaming consoles (surge)']},
-  {id:'elec-rm', cat:'Electrical', icon:'⚡', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Electrical Repair & Maintenance', price:17.99,
-   tags:['30-day wait','$500/claim','Annual inspection'],
+   covers:['General wiring & meter boxes (customer-owned portions)','Fuse boxes, circuit breakers & electrical panels','Switches, receptacles & outlets (standard)','Doorbells, alarm wiring, smoke & CO detectors (low-voltage only)']},
+  {id:'surge-only',cat:'Electrical',icon:'🔌',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Surge Protection Only',price:5.99,tags:['30-day wait','$2k/term'],
+   preview:'Surge coverage for appliances, TVs, computers & gaming',
+   covers:['Kitchen appliances: refrigerator, oven/range, dishwasher, built-in microwave (surge only)','Laundry: washer & dryer (surge only)','Televisions: smart TVs, OLED, QLED, flat screens — all brands (surge only)','Electronics: laptops, desktops, tablets, routers, printers (surge only)','Gaming: PlayStation, Xbox, Nintendo Switch & accessories (surge only)']},
+  {id:'elec-rm',cat:'Electrical',icon:'⚡',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Electrical Repair & Maintenance',price:17.99,tags:['30-day wait','$500/claim','Annual inspection'],
    preview:'Electrical repairs + annual safety inspection',
-   covers:['All electrical repairs','1 annual safety inspection per term']},
-  {id:'elec-ev', cat:'Electrical', icon:'⚡', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Electrical Repair + EV Charging', price:8.99,
-   tags:['30-day wait','$500/claim','EV station'],
+   covers:['All electrical repairs covered (same as Electrical Repair Only)','1 full electrical safety inspection per term — wiring, panels, outlets, GFCI']},
+  {id:'elec-ev',cat:'Electrical',icon:'⚡',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Electrical Repair + EV Charging',price:8.99,tags:['30-day wait','$500/claim','EV station'],
    preview:'Electrical repairs + EV charging station coverage',
-   covers:['Electrical system repairs','EV charging station coverage']},
-
-  // ── INTERIOR PLUMBING INDIVIDUAL ─────────────────────────────
-  {id:'plumb-repair', cat:'Interior Plumbing', icon:'🔧', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Plumbing – Repair', price:8.99,
-   tags:['30-day wait','$500/claim'],
-   preview:'Plumbing repairs (excludes fixtures)',
-   covers:['Pipes, valves, interior plumbing components','Excludes: fixtures, sump pumps, well pumps, exterior lines']},
-  {id:'plumb-rm', cat:'Interior Plumbing', icon:'🔧', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Plumbing – Repair & Maintenance', price:18.99,
-   tags:['30-day wait','$500/claim','1 tune-up/year'],
+   covers:['All standard electrical repairs','EV charging station: Level 1 (120V) & Level 2 (240V) home chargers']},
+  // PLUMBING INDIVIDUAL
+  {id:'plumb-repair',cat:'Interior Plumbing',icon:'🔧',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Plumbing – Repair',price:8.99,tags:['30-day wait','$500/claim'],
+   preview:'Interior plumbing repairs — excludes fixtures',
+   covers:['Pipes, valves & joints: copper, PVC, PEX, galvanized','Interior shut-off valves & supply lines','Excludes: toilets, faucets, showerheads, bathtubs, sump/well pumps, exterior lines']},
+  {id:'plumb-rm',cat:'Interior Plumbing',icon:'🔧',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Plumbing – Repair & Maintenance',price:18.99,tags:['30-day wait','$500/claim','1 tune-up/year'],
    preview:'Plumbing repairs + 1 annual tune-up',
-   covers:['Plumbing repairs (excludes fixtures)','1 plumbing tune-up per term']},
-  {id:'gas-line', cat:'Interior Plumbing', icon:'🔧', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Interior Gas Line Repair', price:4.99,
-   tags:['30-day wait','$500/claim'],
-   preview:'Interior gas line repairs',
-   covers:['Interior gas line repairs only','Excludes exterior gas lines']},
-
-  // ── WATER & SEWER ─────────────────────────────────────────────
-  {id:'sewer-basic', cat:'Water & Sewer (External)', icon:'🚰', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Ext. Sewer & Water Line – BASIC', price:9.99,
-   tags:['30-day wait','$5k/term','$500 landscape'],
-   preview:'External water & sewer/septic line repair + $500 landscape allowance',
-   covers:['External water line repair','External sewer or septic line repair','Up to $500/term landscape damage allowance']},
-  {id:'sewer-deluxe', cat:'Water & Sewer (External)', icon:'🚰', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Ext. Sewer & Water Line – DELUXE', price:15.99,
-   tags:['30-day wait','$5k/term','$5k concrete + $500 landscape'],
-   preview:'External water & sewer/septic + concrete restoration + landscape',
-   covers:['External water line repair','External sewer or septic line repair','Up to $5,000/term concrete restoration','Up to $500/term landscape allowance']},
-
-  // ── PERSONAL ELECTRONICS ─────────────────────────────────────
-  {id:'elec-personal', cat:'Personal Electronics', icon:'💻', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Personal Electronics Repair Plan', price:19.99,
-   tags:['30-day wait','$2k/claim','$5k aggregate','Unlimited devices'],
+   covers:['All interior plumbing repairs (excludes fixtures)','1 plumbing tune-up per term — drain inspection, pressure check, leak detection']},
+  {id:'gas-line',cat:'Interior Plumbing',icon:'🔧',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Interior Gas Line Repair',price:4.99,tags:['30-day wait','$500/claim'],
+   preview:'Interior gas line repairs only',
+   covers:['Interior gas line leaks, connections & fittings','Excludes: exterior gas lines, gas meter, appliance connections & gas appliances themselves']},
+  // WATER & SEWER
+  {id:'sewer-basic',cat:'Water & Sewer (External)',icon:'🚰',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Ext. Sewer & Water Line – BASIC',price:9.99,tags:['30-day wait','$5k/term','$500 landscape'],
+   preview:'External water & sewer/septic repair + $500 landscape allowance',
+   covers:['External water supply line — from water meter to home foundation','External sewer line or septic line — from home to street/tank','Up to $500/term landscape damage reimbursement (digging/restoration)']},
+  {id:'sewer-deluxe',cat:'Water & Sewer (External)',icon:'🚰',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Ext. Sewer & Water Line – DELUXE',price:15.99,tags:['30-day wait','$5k/term','$5k concrete + $500 landscape'],
+   preview:'External water & sewer/septic + public concrete restoration + landscape',
+   covers:['External water supply line & sewer/septic line (same as BASIC)','Up to $5,000/term public concrete/sidewalk restoration (city-required)','Up to $500/term landscape damage reimbursement']},
+  // PERSONAL ELECTRONICS
+  {id:'elec-personal',cat:'Personal Electronics',icon:'💻',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Personal Electronics Repair Plan',price:19.99,tags:['30-day wait','$2k/claim','$5k aggregate','Unlimited devices'],
    preview:'TVs, laptops, consoles, smart devices — unlimited devices, no age/brand limit',
-   covers:['Televisions','Laptops & computers','Gaming consoles','Smart devices & cameras','Audio systems','No brand or age restriction']},
-  {id:'elec-mobile', cat:'Personal Electronics', icon:'📱', planUnits:1, fixedPrice:false, bestSeller:false,
-   name:'Personal Electronics + Mobile Devices', price:34.99,
-   tags:['30-day wait','$2k/claim','$5k aggregate','Unlimited phones'],
-   preview:'Everything in Electronics + unlimited mobile phones & tablets',
-   covers:['Everything in Personal Electronics plan','Unlimited mobile phones & tablets','No brand or age restriction']}
+   covers:['Televisions: smart TVs, OLED, QLED, 4K, flat screens — all brands, all sizes','Laptops & desktop computers — Windows, Mac, all brands','Gaming consoles: PlayStation 4/5, Xbox One/Series X/S, Nintendo Switch','Smart devices: tablets (iPad, Android), cameras, smart speakers (Alexa, Google Home)','Audio: soundbars, home theater receivers, wireless speakers','No brand restriction · No age restriction · Unlimited number of devices','$2,000/claim · $5,000 aggregate per term']},
+  {id:'elec-mobile',cat:'Personal Electronics',icon:'📱',planUnits:1,fixedPrice:false,bestSeller:false,
+   name:'Personal Electronics + Mobile Devices',price:34.99,tags:['30-day wait','$2k/claim','$5k aggregate','Unlimited phones'],
+   preview:'Everything in Electronics plan + unlimited smartphones & tablets',
+   covers:['Everything included in Personal Electronics Repair Plan','Smartphones: iPhone (all models), Android (Samsung, Google, etc.) — all brands','Tablets covered under mobile (in addition to smart devices)','Unlimited number of mobile devices · No brand or age restriction']}
 ];
 
-// ═══ STATE ═══════════════════════════════════════════
 var selected = new Set();
-var manualDisc = {}; // planId -> 0|10|15
+var manualDisc = {};
 
-// ═══ HELPERS ═════════════════════════════════════════
-function totalUnits() {
-  return PLANS.reduce(function(n,p){ return selected.has(p.id) ? n+p.planUnits : n; }, 0);
-}
-function autoDiscRate() {
-  var n = totalUnits();
-  return n>=3 ? 0.15 : n===2 ? 0.10 : 0;
-}
-function effectiveDisc(p) {
-  if(!selected.has(p.id)) return 0;
-  // Manual always wins if set
-  var m = manualDisc[p.id]||0;
-  if(m>0) return m/100;
-  // Fixed price plans: no auto-discount applied to their price
-  if(p.fixedPrice) return 0;
+function totalUnits(){return PLANS.reduce(function(n,p){return selected.has(p.id)?n+p.planUnits:n;},0);}
+function autoDiscRate(){var n=totalUnits();return n>=3?0.15:n===2?0.10:0;}
+function effectiveDisc(p){
+  if(!selected.has(p.id))return 0;
+  var m=manualDisc[p.id]||0;
+  if(m>0)return m/100;
+  if(p.fixedPrice)return 0;
   return autoDiscRate();
 }
-function discountedPrice(p) { return p.price*(1-effectiveDisc(p)); }
+function discountedPrice(p){return p.price*(1-effectiveDisc(p));}
 
-// ═══ BUILD BEST SELLERS ══════════════════════════════
-function buildBS() {
-  var bsPlans = PLANS.filter(function(p){return p.bestSeller;}).sort(function(a,b){return a.bsRank-b.bsRank;});
-  document.getElementById('bs-grid').innerHTML = bsPlans.map(function(p) {
-    var covHtml = p.covers.map(function(c){return '<li>'+c+'</li>';}).join('');
-    return '<div class="bs-card" id="bs-'+p.id+'" onclick="togglePlan(\''+p.id+'\')">' +
-      '<div class="bs-check">✓</div>' +
-      '<div class="bs-num">0'+p.bsRank+'</div>' +
-      '<span class="bs-icon">'+p.icon+'</span>' +
-      '<div class="bs-name">'+p.name+'</div>' +
-      '<div class="bs-why">'+p.bsWhy+'</div>' +
-      '<div class="bs-footer">' +
-        '<div class="bs-price-block">' +
-          '<div class="bs-strike" id="bs-strike-'+p.id+'"></div>' +
-          '<div class="bs-disc-price" id="bs-disc-'+p.id+'"></div>' +
-          '<div class="bs-orig" id="bs-orig-'+p.id+'">$'+p.price.toFixed(2)+'<span class="mo">/mo</span></div>' +
-        '</div>' +
-        '<div class="bs-meta">'+p.tags.slice(0,2).join('<br>')+'</div>' +
-      '</div>' +
-      // coverage — shows when selected
-      '<div class="bs-coverage"><ul class="bs-cov-list">'+covHtml+'</ul></div>' +
-      // manual discount — shows when selected
-      '<div class="bs-manual" onclick="event.stopPropagation()">' +
-        '<span class="bs-manual-lbl">Discount:</span>' +
-        '<div class="disc-btns">' +
-          '<button class="db" id="bsdb10-'+p.id+'" onclick="setDisc(event,\''+p.id+'\',10)">10%</button>' +
-          '<button class="db" id="bsdb15-'+p.id+'" onclick="setDisc(event,\''+p.id+'\',15)">15%</button>' +
-        '</div>' +
-      '</div>' +
+function buildBS(){
+  var bsPlans=PLANS.filter(function(p){return p.bestSeller;}).sort(function(a,b){return a.bsRank-b.bsRank;});
+  document.getElementById('bs-grid').innerHTML=bsPlans.map(function(p){
+    var covHtml=p.covers.map(function(c){return '<li>'+c+'</li>';}).join('');
+    return '<div class="bs-card" id="bs-'+p.id+'" onclick="togglePlan(\''+p.id+'\')">'+
+      '<div class="bs-check">✓</div>'+
+      '<div class="bs-num">0'+p.bsRank+'</div>'+
+      '<span class="bs-icon">'+p.icon+'</span>'+
+      '<div class="bs-name">'+p.name+'</div>'+
+      '<div class="bs-why">'+p.bsWhy+'</div>'+
+      '<div class="bs-footer">'+
+        '<div>'+
+          '<div class="bs-strike" id="bs-strike-'+p.id+'"></div>'+
+          '<div class="bs-disc-price" id="bs-disc-'+p.id+'"></div>'+
+          '<div class="bs-orig" id="bs-orig-'+p.id+'">$'+p.price.toFixed(2)+'<span class="mo">/mo</span></div>'+
+        '</div>'+
+        '<div class="bs-meta">'+p.tags.slice(0,2).join('<br>')+'</div>'+
+      '</div>'+
+      '<div class="bs-coverage"><ul class="bs-cov-list">'+covHtml+'</ul></div>'+
+      '<div class="bs-manual" onclick="event.stopPropagation()">'+
+        '<span class="bs-manual-lbl">Manual discount:</span>'+
+        '<div class="disc-btns">'+
+          '<button class="db" id="bsdb10-'+p.id+'" onclick="setDisc(event,\''+p.id+'\',10)">10%</button>'+
+          '<button class="db" id="bsdb15-'+p.id+'" onclick="setDisc(event,\''+p.id+'\',15)">15%</button>'+
+        '</div>'+
+      '</div>'+
     '</div>';
   }).join('');
 }
 
-// ═══ BUILD ALL PLANS ═════════════════════════════════
-function buildAll() {
-  var cats = [];
-  PLANS.forEach(function(p){if(cats.indexOf(p.cat)===-1) cats.push(p.cat);});
-  document.getElementById('all-container').innerHTML = cats.map(function(cat) {
-    var catPs = PLANS.filter(function(p){return p.cat===cat;});
-    var slug = cat.replace(/[^a-z0-9]/gi,'_').toLowerCase();
-    var cards = catPs.map(function(p) {
-      var isCombo = p.planUnits > 1;
-      var comboTag = isCombo ? '<div class="pc-combo-tag">Combo · '+p.planUnits+' plan units</div>' : '';
-      var tags = p.tags.map(function(t){
+function buildAll(){
+  var cats=[];
+  PLANS.forEach(function(p){if(cats.indexOf(p.cat)===-1)cats.push(p.cat);});
+  document.getElementById('all-container').innerHTML=cats.map(function(cat){
+    var catPs=PLANS.filter(function(p){return p.cat===cat;});
+    var slug=cat.replace(/[^a-z0-9]/gi,'_').toLowerCase();
+    var cards=catPs.map(function(p){
+      var comboTag=p.planUnits>1?'<div class="pc-combo-tag">Combo · '+p.planUnits+' plan units</div>':'';
+      var tags=p.tags.map(function(t){
         var c='tl';
         if(t.indexOf('wait')>-1)c='tw';
         else if(t.toLowerCase().indexOf('tune-up')>-1||t.toLowerCase().indexOf('maintenance')>-1)c='tm';
         else if(t.indexOf('replacement')>-1)c='tp';
         return '<span class="tag '+c+'">'+t+'</span>';
       }).join('');
-      var covHtml = p.covers.map(function(c){return '<li>'+c+'</li>';}).join('');
-      return '<div class="plan-card" id="card-'+p.id+'" onclick="togglePlan(\''+p.id+'\')">' +
-        '<div class="pc-check">✓</div>' +
-        '<div>' +
-          comboTag +
-          '<div class="pc-name">'+p.name+'</div>' +
-          '<div class="pc-preview">'+p.preview+'</div>' +
-          '<div class="pc-tags">'+tags+'</div>' +
-          // coverage — auto-shows when selected
-          '<div class="pc-coverage"><ul class="pc-cov-list">'+covHtml+'</ul></div>' +
-          // manual discount
-          '<div class="pc-manual" onclick="event.stopPropagation()">' +
-            '<span class="pc-manual-lbl">Discount:</span>' +
-            '<div class="disc-btns">' +
-              '<button class="db" id="db10-'+p.id+'" onclick="setDisc(event,\''+p.id+'\',10)">10%</button>' +
-              '<button class="db" id="db15-'+p.id+'" onclick="setDisc(event,\''+p.id+'\',15)">15%</button>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="pc-right">' +
-          '<div class="pr-strike" id="strike-'+p.id+'"></div>' +
-          '<div class="pr-disc" id="disc-'+p.id+'"></div>' +
-          '<div class="pr-orig" id="orig-'+p.id+'">$'+p.price.toFixed(2)+'<span class="pr-mo">/mo</span></div>' +
-        '</div>' +
+      var covHtml=p.covers.map(function(c){return '<li>'+c+'</li>';}).join('');
+      return '<div class="plan-card" id="card-'+p.id+'" onclick="togglePlan(\''+p.id+'\')">'+
+        '<div class="pc-check">✓</div>'+
+        '<div>'+comboTag+
+          '<div class="pc-name">'+p.name+'</div>'+
+          '<div class="pc-preview">'+p.preview+'</div>'+
+          '<div class="pc-tags">'+tags+'</div>'+
+          '<div class="pc-coverage"><ul class="pc-cov-list">'+covHtml+'</ul></div>'+
+          '<div class="pc-manual" onclick="event.stopPropagation()">'+
+            '<span class="pc-manual-lbl">Manual discount:</span>'+
+            '<div class="disc-btns">'+
+              '<button class="db" id="db10-'+p.id+'" onclick="setDisc(event,\''+p.id+'\',10)">10%</button>'+
+              '<button class="db" id="db15-'+p.id+'" onclick="setDisc(event,\''+p.id+'\',15)">15%</button>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="pc-right">'+
+          '<div class="pr-strike" id="strike-'+p.id+'"></div>'+
+          '<div class="pr-disc" id="disc-'+p.id+'"></div>'+
+          '<div class="pr-orig" id="orig-'+p.id+'">$'+p.price.toFixed(2)+'<span class="pr-mo">/mo</span></div>'+
+        '</div>'+
       '</div>';
     }).join('');
-    return '<div class="cat-block" id="cat-'+slug+'">' +
-      '<div class="cat-head" onclick="toggleCat(\''+slug+'\')">' +
-        '<span class="cat-ico">'+catPs[0].icon+'</span>' +
-        '<span class="cat-lbl">'+cat+'</span>' +
-        '<span class="cat-n">'+catPs.length+' plans</span>' +
-        '<span class="cat-arr">▼</span>' +
-      '</div>' +
-      '<div class="cat-plans">'+cards+'</div>' +
+    return '<div class="cat-block" id="cat-'+slug+'">'+
+      '<div class="cat-head" onclick="toggleCat(\''+slug+'\')">'+
+        '<span class="cat-ico">'+catPs[0].icon+'</span>'+
+        '<span class="cat-lbl">'+cat+'</span>'+
+        '<span class="cat-n">'+catPs.length+' plans</span>'+
+        '<span class="cat-arr">▼</span>'+
+      '</div>'+
+      '<div class="cat-plans">'+cards+'</div>'+
     '</div>';
   }).join('');
 }
 
-// ═══ TOGGLE ══════════════════════════════════════════
-function togglePlan(id) {
-  if(selected.has(id)){ selected.delete(id); delete manualDisc[id]; }
+function togglePlan(id){
+  if(selected.has(id)){selected.delete(id);delete manualDisc[id];}
   else selected.add(id);
   render();
 }
-function toggleCat(slug){ document.getElementById('cat-'+slug).classList.toggle('closed'); }
-
-function setDisc(e, id, pct) {
+function toggleCat(slug){document.getElementById('cat-'+slug).classList.toggle('closed');}
+function setDisc(e,id,pct){
   e.stopPropagation();
-  if(!selected.has(id)) return;
-  manualDisc[id] = (manualDisc[id]===pct) ? 0 : pct;
+  if(!selected.has(id))return;
+  manualDisc[id]=(manualDisc[id]===pct)?0:pct;
   render();
 }
 
-// ═══ RENDER ══════════════════════════════════════════
-function render() {
-  var autoRate = autoDiscRate();
-  var allSel = PLANS.filter(function(p){return selected.has(p.id);});
-
-  PLANS.forEach(function(p) {
-    var isSel = selected.has(p.id);
-    var eff = effectiveDisc(p);
-    var finalP = p.price*(1-eff);
-    var m = manualDisc[p.id]||0;
-
-    // ── All Plans card ──
-    var card = document.getElementById('card-'+p.id);
-    if(card) {
-      card.classList.toggle('selected', isSel);
-      var dEl=document.getElementById('disc-'+p.id);
-      var sEl=document.getElementById('strike-'+p.id);
-      var oEl=document.getElementById('orig-'+p.id);
-      if(isSel && eff>0){
-        dEl.style.display='block'; dEl.textContent='$'+finalP.toFixed(2)+'/mo';
-        sEl.style.display='block'; sEl.textContent='$'+p.price.toFixed(2);
-        oEl.style.display='none';
-      } else {
-        dEl.style.display='none'; sEl.style.display='none';
-        if(oEl) oEl.style.display='block';
-      }
-      // manual buttons
-      var b10=document.getElementById('db10-'+p.id);
-      var b15=document.getElementById('db15-'+p.id);
-      if(b10){ b10.className='db'+(m===10?' on10':''); }
-      if(b15){ b15.className='db'+(m===15?' on15':''); }
-    }
-
-    // ── Best Seller card ──
-    var bsc=document.getElementById('bs-'+p.id);
-    if(bsc){
-      bsc.classList.toggle('selected', isSel);
-      var bsO=document.getElementById('bs-orig-'+p.id);
-      var bsD=document.getElementById('bs-disc-'+p.id);
-      var bsS=document.getElementById('bs-strike-'+p.id);
-      if(isSel && eff>0){
-        if(bsD){bsD.style.display='block'; bsD.innerHTML='$'+finalP.toFixed(2)+'<span class="mo">/mo</span>';}
-        if(bsS){bsS.style.display='block'; bsS.textContent='$'+p.price.toFixed(2);}
-        if(bsO) bsO.style.display='none';
-      } else {
-        if(bsD) bsD.style.display='none';
-        if(bsS) bsS.style.display='none';
-        if(bsO){bsO.style.display='block'; bsO.innerHTML='$'+p.price.toFixed(2)+'<span class="mo">/mo</span>';}
-      }
-      var bb10=document.getElementById('bsdb10-'+p.id);
-      var bb15=document.getElementById('bsdb15-'+p.id);
-      if(bb10) bb10.className='db'+(m===10?' on10':'');
-      if(bb15) bb15.className='db'+(m===15?' on15':'');
-    }
-  });
-
-  // ── Summary ──
-  var n = totalUnits();
-  document.getElementById('cnt-n').textContent = n;
-  var hint='plan units selected';
-  if(n===1) hint='plan unit · add 1 more for 10% OFF';
-  else if(n===2) hint='plan units · 10% OFF · 1 more for 15%';
-  else if(n>=3) hint='plan units · 🎉 15% OFF applied!';
-  document.getElementById('cnt-h').textContent = hint;
-
-  ['ds0','ds1','ds2'].forEach(function(id,i){
-    var el=document.getElementById(id);
-    el.classList.remove('on','gold');
-    if(n===i+1&&i<2) el.classList.add('on');
-    if(n>=3&&i===2) el.classList.add('gold');
-  });
-
-  document.getElementById('empty').style.display = allSel.length===0?'block':'none';
-  document.getElementById('totals').style.display = allSel.length===0?'none':'block';
-
-  // Auto-discount banner: show only if any non-fixed plan gets the auto rate
-  var hasAuto = allSel.some(function(p){ return !p.fixedPrice && (manualDisc[p.id]||0)===0 && autoRate>0; });
-  var banner=document.getElementById('disc-banner');
-  if(hasAuto){ banner.classList.add('show'); document.getElementById('db-pct').textContent=(autoRate===0.15?'15% OFF — 3+ plan units':'10% OFF — 2 plan units'); }
-  else banner.classList.remove('show');
-
-  // Selected items list
-  document.getElementById('sel-list').innerHTML = allSel.map(function(p){
+function render(){
+  var autoRate=autoDiscRate();
+  var allSel=PLANS.filter(function(p){return selected.has(p.id);});
+  PLANS.forEach(function(p){
+    var isSel=selected.has(p.id);
     var eff=effectiveDisc(p);
     var finalP=p.price*(1-eff);
     var m=manualDisc[p.id]||0;
-    var sub = '';
-    if(p.planUnits>1) sub='<div class="si-sub">'+p.planUnits+' plan units</div>';
-    var m10=m===10?' on10':''; var m15=m===15?' on15':'';
-    return '<div class="sel-item">' +
-      '<div class="si-top">' +
-        '<div><div class="si-name">'+p.name+'</div>'+sub+'</div>' +
-        '<div class="si-prices">' +
-          (eff>0?'<div class="si-orig-sm">$'+p.price.toFixed(2)+'</div>':'')+
-          '<div class="si-final'+(eff>0?' green':'')+'">$'+finalP.toFixed(2)+'/mo</div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="si-manual" onclick="event.stopPropagation()">' +
-        '<span class="si-manual-lbl">Discount:</span>' +
-        '<div class="disc-btns">' +
-          '<button class="db'+m10+'" onclick="setDisc(event,\''+p.id+'\',10)">10%</button>' +
-          '<button class="db'+m15+'" onclick="setDisc(event,\''+p.id+'\',15)">15%</button>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
+    var card=document.getElementById('card-'+p.id);
+    if(card){
+      card.classList.toggle('selected',isSel);
+      var dEl=document.getElementById('disc-'+p.id);
+      var sEl=document.getElementById('strike-'+p.id);
+      var oEl=document.getElementById('orig-'+p.id);
+      if(isSel&&eff>0){
+        if(dEl){dEl.style.display='block';dEl.textContent='$'+finalP.toFixed(2)+'/mo';}
+        if(sEl){sEl.style.display='block';sEl.textContent='$'+p.price.toFixed(2);}
+        if(oEl)oEl.style.display='none';
+      } else {
+        if(dEl)dEl.style.display='none';
+        if(sEl)sEl.style.display='none';
+        if(oEl)oEl.style.display='block';
+      }
+      var b10=document.getElementById('db10-'+p.id);
+      var b15=document.getElementById('db15-'+p.id);
+      if(b10)b10.className='db'+(m===10?' on10':'');
+      if(b15)b15.className='db'+(m===15?' on15':'');
+    }
+    var bsc=document.getElementById('bs-'+p.id);
+    if(bsc){
+      bsc.classList.toggle('selected',isSel);
+      var bsO=document.getElementById('bs-orig-'+p.id);
+      var bsD=document.getElementById('bs-disc-'+p.id);
+      var bsS=document.getElementById('bs-strike-'+p.id);
+      if(isSel&&eff>0){
+        if(bsD){bsD.style.display='block';bsD.innerHTML='$'+finalP.toFixed(2)+'<span class="mo">/mo</span>';}
+        if(bsS){bsS.style.display='block';bsS.textContent='$'+p.price.toFixed(2);}
+        if(bsO)bsO.style.display='none';
+      } else {
+        if(bsD)bsD.style.display='none';
+        if(bsS)bsS.style.display='none';
+        if(bsO){bsO.style.display='block';bsO.innerHTML='$'+p.price.toFixed(2)+'<span class="mo">/mo</span>';}
+      }
+      var bb10=document.getElementById('bsdb10-'+p.id);
+      var bb15=document.getElementById('bsdb15-'+p.id);
+      if(bb10)bb10.className='db'+(m===10?' on10':'');
+      if(bb15)bb15.className='db'+(m===15?' on15':'');
+    }
+  });
+  var n=totalUnits();
+  document.getElementById('cnt-n').textContent=n;
+  var hint='plan units selected';
+  if(n===1)hint='plan unit · add 1 more for 10% OFF';
+  else if(n===2)hint='plan units · 10% OFF · 1 more for 15%';
+  else if(n>=3)hint='plan units · 🎉 15% OFF applied!';
+  document.getElementById('cnt-h').textContent=hint;
+  ['ds0','ds1','ds2'].forEach(function(id,i){
+    var el=document.getElementById(id);
+    el.classList.remove('on','gold');
+    if(n===i+1&&i<2)el.classList.add('on');
+    if(n>=3&&i===2)el.classList.add('gold');
+  });
+  document.getElementById('empty').style.display=allSel.length===0?'block':'none';
+  document.getElementById('totals').style.display=allSel.length===0?'none':'block';
+  var hasAuto=allSel.some(function(p){return !p.fixedPrice&&(manualDisc[p.id]||0)===0&&autoRate>0;});
+  var banner=document.getElementById('disc-banner');
+  if(hasAuto){
+    banner.classList.add('show');
+    document.getElementById('db-pct').textContent=(autoRate===0.15?'15% OFF — 3+ plan units':'10% OFF — 2 plan units');
+  } else {
+    banner.classList.remove('show');
+  }
+  document.getElementById('sel-list').innerHTML=allSel.map(function(p){
+    var eff=effectiveDisc(p);
+    var finalP=p.price*(1-eff);
+    var m=manualDisc[p.id]||0;
+    var sub=p.planUnits>1?'<div class="si-sub">'+p.planUnits+' plan units</div>':'';
+    return '<div class="sel-item"><div class="si-top"><div><div class="si-name">'+p.name+'</div>'+sub+'</div>'+
+      '<div class="si-prices">'+(eff>0?'<div class="si-orig-sm">$'+p.price.toFixed(2)+'</div>':'')+
+      '<div class="si-final'+(eff>0?' green':'')+'">$'+finalP.toFixed(2)+'/mo</div></div></div>'+
+      '<div class="si-manual" onclick="event.stopPropagation()"><span class="si-manual-lbl">Manual disc:</span>'+
+      '<div class="disc-btns">'+
+        '<button class="db'+(m===10?' on10':'')+'" onclick="setDisc(event,\''+p.id+'\',10)">10%</button>'+
+        '<button class="db'+(m===15?' on15':'')+'" onclick="setDisc(event,\''+p.id+'\',15)">15%</button>'+
+      '</div></div></div>';
   }).join('');
-
-  // Totals
   var subtotal=allSel.reduce(function(s,p){return s+p.price;},0);
   var total=allSel.reduce(function(s,p){return s+discountedPrice(p);},0);
   var savings=subtotal-total;
@@ -706,36 +871,398 @@ function render() {
   document.getElementById('grand').textContent=total.toFixed(2);
 }
 
-// ═══ FILTER ══════════════════════════════════════════
 function filterPlans(){
   var q=document.getElementById('search').value.toLowerCase().trim();
   PLANS.forEach(function(p){
     var card=document.getElementById('card-'+p.id);
-    if(!card) return;
+    if(!card)return;
     var hay=[p.name,p.cat,p.preview].concat(p.covers).concat(p.tags).join(' ').toLowerCase();
     card.classList.toggle('hidden',q.length>0&&hay.indexOf(q)===-1);
   });
   document.querySelectorAll('.cat-block').forEach(function(b){
     var vis=b.querySelectorAll('.plan-card:not(.hidden)').length;
     b.classList.toggle('closed',q.length>0&&vis===0);
-    if(!q) b.classList.remove('closed');
+    if(!q)b.classList.remove('closed');
   });
 }
 
-// ═══ TAB ═════════════════════════════════════════════
 function switchTab(t){
   var hot=t==='hot';
   document.getElementById('tab-hot-btn').classList.toggle('active',hot);
   document.getElementById('tab-all-btn').classList.toggle('active',!hot);
-  document.getElementById('tab-hot-content').classList.toggle('show',hot);
-  document.getElementById('tab-all-content').classList.toggle('show',!hot);
+  document.getElementById('tab-hot-content').style.display=hot?'block':'none';
+  document.getElementById('tab-all-content').style.display=hot?'none':'block';
+}
+function resetAll(){selected.clear();manualDisc={};render();}
+
+// ──────────────────────────────────────────────────
+// SALES SCRIPTS
+// ──────────────────────────────────────────────────
+var currentScenario='claim';
+var currentScriptLang='en';
+
+var SCRIPTS={
+  claim:{title:'After a Claim Call',en:{
+    opener:{label:'Ice Breaker / Opener',badge:'badge-open',
+      text:'<strong>"Before I let you go, [Name] — I just want to make sure you\'re protected for next time."</strong>\n\nYou just had a service order created today. That repair is covered. But here\'s what most people don\'t think about — the next time something breaks, it\'s coming out of your pocket.\n\nFor less than what most people spend on coffee in a week, we can make sure that never happens.',
+      note:'Pause after this. Let silence work. Most people will ask "how much is it?" — and that\'s your invitation.'},
+    prove:{label:'Proving Questions — if they hesitate',badge:'badge-prove',
+      text:'• <strong>"Can I ask — when something breaks at home, do you usually have money set aside for it?"</strong>\n\n• <strong>"The repair today — were you expecting that call, or did it catch you off guard?"</strong>\n\n• <strong>"If something else breaks in the next 6 months, would you want to pay for that out of pocket?"</strong>',
+      note:'Their own answers sell better than anything you can say. Let them talk.'},
+    obj:{label:'When They Push Back',badge:'badge-obj',text:'',
+      objs:[
+        {q:'"I already have insurance."',a:'"Exactly — and insurance covers disasters: floods, fires. What we cover is everything insurance doesn\'t — normal wear and tear, everyday breakdowns. They don\'t overlap at all."'},
+        {q:'"It\'s too expensive."',a:'"Totally fair. What did your last repair cost you? Most run $400–$900. Our plans start at $8.99 a month. Even one covered repair pays for 4–8 years of the plan."'},
+        {q:'"Let me think about it."',a:'"Of course. The only thing — there\'s a 30-day waiting period from enrollment. So the sooner you start, the sooner you\'re fully covered. What\'s the thing holding you back?"'},
+        {q:'"I don\'t need it."',a:'"I hear you. Quick question — when was the last time something broke at home? Most people say \'I don\'t need it\' until the HVAC goes out in August. $27.99 a month versus a $2,000 emergency."'}
+      ]},
+    close:{label:'The Close',badge:'badge-close',
+      text:'<strong>"Alright [Name] — based on what you told me, the [Plan Name] is the right fit. It\'s [price] a month. No deductible, no service call fees, just coverage. Want me to set that up for you right now?"</strong>\n\nIf they hesitate: <strong>"What would it take to get you covered today?"</strong>',
+      note:'Say the price and stop talking. Short closes win. Silence after asking is your biggest ally.'}
+  },es:{
+    opener:{label:'Rompehielo / Apertura',badge:'badge-open',
+      text:'<strong>"Antes de dejarle ir, [Nombre] — solo quiero asegurarme de que esté protegido para la próxima vez."</strong>\n\nHoy creamos una orden de servicio. Esa reparación está cubierta. Pero lo que la mayoría no piensa es que la próxima vez que algo falle, eso va a salir de su bolsillo.\n\nPor menos de lo que gasta en café en una semana, podemos asegurarnos de que eso nunca le pase.',
+      note:'Haga una pausa después. Deje que el silencio trabaje. La mayoría preguntará "¿cuánto cuesta?" — y esa es su invitación.'},
+    prove:{label:'Preguntas de Sondeo — si duda',badge:'badge-prove',
+      text:'• <strong>"¿Puedo preguntarle — cuando algo se rompe en casa, ¿suele tener dinero guardado para eso?"</strong>\n\n• <strong>"La reparación de hoy — ¿la esperaba, o lo tomó por sorpresa?"</strong>\n\n• <strong>"Si algo más falla en los próximos 6 meses, ¿querría pagarlo de su bolsillo?"</strong>',
+      note:'Sus propias respuestas venden mejor que cualquier cosa que usted diga. Deje que hablen.'},
+    obj:{label:'Cuando Ponen Resistencia',badge:'badge-obj',text:'',
+      objs:[
+        {q:'"Ya tengo seguro."',a:'"Exacto — y el seguro cubre desastres: inundaciones, incendios. Lo que nosotros cubrimos es todo lo que el seguro no cubre — desgaste normal, averías del día a día. No se superponen para nada."'},
+        {q:'"Está caro."',a:'"Totalmente justo. ¿Cuánto le costó la última reparación? La mayoría cuesta entre $400 y $900. Nuestros planes empiezan en $8.99 al mes. Una sola reparación cubierta paga 4–8 años del plan."'},
+        {q:'"Déjeme pensarlo."',a:'"Claro. Lo único — hay un período de espera de 30 días desde la inscripción. Así que entre antes, antes estará cubierto. ¿Qué le genera duda en este momento?"'},
+        {q:'"No lo necesito."',a:'"Lo entiendo. Pregunta rápida — ¿cuándo fue la última vez que algo se rompió en casa? La mayoría dice \'no lo necesito\' hasta que el aire falla en agosto. $27.99 al mes versus una emergencia de $2,000."'}
+      ]},
+    close:{label:'El Cierre',badge:'badge-close',
+      text:'<strong>"Muy bien [Nombre] — según lo que me dijo, el [Plan] es lo indicado. Son [precio] al mes. Sin deducible, sin cargo por visita, solo cobertura. ¿Se lo activo ahora mismo?"</strong>\n\nSi duda: <strong>"¿Qué necesitaría para que lo activemos hoy?"</strong>',
+      note:'Diga el precio y no siga hablando. Los cierres cortos ganan. El silencio después de preguntar es su mayor aliado.'}
+  }},
+  billing:{title:'Billing Call',en:{
+    opener:{label:'Pivot from Billing',badge:'badge-open',
+      text:'<strong>"Alright, I\'ve taken care of that for you — everything looks good. Before I let you go, can I share something quick that most of our customers find really useful?"</strong>\n\nWe have home protection plans that cover repairs and breakdowns — HVAC, plumbing, electrical, appliances. And as an NRG customer, you qualify for exclusive pricing.\n\nDo you own your home?',
+      note:'Resolve their billing issue 100% first. Never pivot before the problem is solved — they won\'t listen.'},
+    prove:{label:'Qualifying Questions',badge:'badge-prove',
+      text:'• <strong>"Has anything broken at home recently — appliances, HVAC, plumbing?"</strong>\n\n• <strong>"How do you handle it when something breaks — do you call a contractor?"</strong>\n\n• <strong>"Did you know most home repairs run $400–$1,500 out of pocket?"</strong>',note:''},
+    obj:{label:'Common Objections',badge:'badge-obj',text:'',
+      objs:[
+        {q:'"I didn\'t call about plans."',a:'"I know — I won\'t take much of your time. I share this with most customers because it genuinely saves money. Give me 60 seconds?"'},
+        {q:'"Not interested."',a:'"That\'s fine. Quick question — do you have anything that covers your appliances or HVAC right now if they break down?"'},
+        {q:'"I\'ll look online."',a:'"Absolutely. And if we do it now while your account is open, I can find the best match for your home and get you set up instantly — no back and forth."'}
+      ]},
+    close:{label:'The Close',badge:'badge-close',
+      text:'<strong>"Based on your home, I\'d go with the [Plan]. [Price] a month — no deductibles, no surprises. Want me to add that to your account?"</strong>',note:''}
+  },es:{
+    opener:{label:'Pivote de Facturación',badge:'badge-open',
+      text:'<strong>"Listo, me encargué de eso — todo está bien en su cuenta. Antes de dejarle ir, ¿puedo compartirle algo rápido que la mayoría de nuestros clientes encuentra muy útil?"</strong>\n\nTenemos planes de protección para el hogar — aire, plomería, electricidad, electrodomésticos. Y como cliente de NRG, usted califica para precios exclusivos.\n\n¿Es propietario de su vivienda?',
+      note:'Resuelva su duda de facturación al 100% primero. Nunca pivote antes de resolver el problema.'},
+    prove:{label:'Preguntas de Calificación',badge:'badge-prove',
+      text:'• <strong>"¿Algo se ha descompuesto en casa recientemente — electrodomésticos, aire, plomería?"</strong>\n\n• <strong>"¿Cómo maneja cuando algo se rompe — llama a un técnico?"</strong>\n\n• <strong>"¿Sabía que la mayoría de reparaciones cuestan entre $400 y $1,500 de su bolsillo?"</strong>',note:''},
+    obj:{label:'Objeciones Comunes',badge:'badge-obj',text:'',
+      objs:[
+        {q:'"No llamé por planes."',a:'"Lo sé — no le quito mucho tiempo. Lo comparto con la mayoría de clientes porque genuinamente ahorra dinero. ¿Me da 60 segundos?"'},
+        {q:'"No me interesa."',a:'"Está bien. Pregunta rápida — ¿tiene algo que cubra sus electrodomésticos o aire ahora mismo si se dañan?"'},
+        {q:'"Lo veo en internet."',a:'"Claro. Y si lo hacemos ahora que tengo su cuenta abierta, puedo encontrar la mejor opción y activarla de inmediato — sin ir y venir."'}
+      ]},
+    close:{label:'El Cierre',badge:'badge-close',
+      text:'<strong>"Según su hogar, le recomendaría el [Plan]. [Precio] al mes — sin deducibles, sin sorpresas. ¿Se lo agrego a su cuenta?"</strong>',note:''}
+  }},
+  coldoffer:{title:'Cold Offer / Outbound',en:{
+    opener:{label:'Cold Opener — Keep it under 20 seconds',badge:'badge-open',
+      text:'<strong>"Hi [Name], this is [Your Name] with NRG Protects — quick call. We protect home systems and appliances — HVAC, plumbing, electrical — for a low monthly fee with zero deductibles. You\'re an NRG customer and I wanted to make sure you knew about this.\n\nDo you own your home?"</strong>',
+      note:'That\'s it. 20 seconds max. The goal is only to get permission to continue — not to sell yet. If they say yes to owning the home, you\'re in.'},
+    prove:{label:'After They Say Yes',badge:'badge-prove',
+      text:'• <strong>"When was the last time something major broke at home?"</strong>\n\n• <strong>"What did that cost you?"</strong>\n\n• <strong>"Do you have anything in place right now if your A/C or heater went out tomorrow?"</strong>',
+      note:'Three questions max. Stop when they show pain or surprise at the cost. That\'s your moment.'},
+    obj:{label:'Common Objections',badge:'badge-obj',text:'',
+      objs:[
+        {q:'"How did you get my number?"',a:'"You\'re an NRG Energy customer, so we have your contact on file. This is a benefit we offer our customers — I just want to make sure you\'re aware of it."'},
+        {q:'"Everything\'s fine at home."',a:'"Great — and I hope it stays that way. The thing is, these plans exist for when it isn\'t. And when it\'s not fine, it usually costs $500–$1,500. For $8.99 a month, you never have to worry."'},
+        {q:'"I\'m renting."',a:'"Got it — in that case this isn\'t the right fit today. Thank you for your time!"'}
+      ]},
+    close:{label:'The Close',badge:'badge-close',
+      text:'<strong>"I think the [Plan] is a perfect fit — [price] a month, covers [X and Y], no deductibles. I can get you set up right now in two minutes. Want to do that?"</strong>',note:''}
+  },es:{
+    opener:{label:'Apertura en Frío — Menos de 20 segundos',badge:'badge-open',
+      text:'<strong>"Hola [Nombre], le habla [Su Nombre] de NRG Protects — llamada rápida. Protegemos sistemas del hogar — aire, plomería, electricidad — por una cuota mensual baja sin deducibles. Usted es cliente de NRG y quería asegurarme de que supiera de esto.\n\n¿Es propietario de su vivienda?"</strong>',
+      note:'Solo eso. 20 segundos máximo. El objetivo es obtener permiso para continuar — todavía no vender.'},
+    prove:{label:'Cuando Dicen Sí',badge:'badge-prove',
+      text:'• <strong>"¿Cuándo fue la última vez que algo importante se descompuso en casa?"</strong>\n\n• <strong>"¿Cuánto le costó eso?"</strong>\n\n• <strong>"¿Tiene algo ahora mismo si su aire o calefacción falla mañana?"</strong>',
+      note:'Máximo tres preguntas. Pare cuando muestren preocupación. Ese es su momento.'},
+    obj:{label:'Objeciones Comunes',badge:'badge-obj',text:'',
+      objs:[
+        {q:'"¿Cómo consiguieron mi número?"',a:'"Usted es cliente de NRG Energy, así que tenemos su contacto registrado. Esto es un beneficio que ofrecemos a nuestros clientes — solo quiero asegurarme de que esté al tanto."'},
+        {q:'"Todo está bien en mi casa."',a:'"Qué bueno — y espero que siga así. El punto es que estos planes existen para cuando no lo esté. Y cuando no lo está, usualmente cuesta entre $500 y $1,500. Por $8.99 al mes, nunca tiene que preocuparse."'},
+        {q:'"Soy inquilino."',a:'"Entendido — en ese caso no sería lo indicado hoy. ¡Gracias por su tiempo!"'}
+      ]},
+    close:{label:'El Cierre',badge:'badge-close',
+      text:'<strong>"Creo que el [Plan] es perfecto para usted — [precio] al mes, cubre [X e Y], sin deducibles. Puedo registrarlo ahora en dos minutos. ¿Lo hacemos?"</strong>',note:''}
+  }},
+  objno:{title:'They Said No',en:{
+    opener:{label:'Re-Engage After a No',badge:'badge-open',
+      text:'<strong>"I completely respect that. Can I just ask one quick thing — is it the timing, the price, or something specific about the plan?"</strong>',
+      note:'Don\'t push back. Ask first. Their reason tells you exactly how to respond. People rarely give the real objection on the first no.'},
+    prove:{label:'Uncovering the Real Objection',badge:'badge-prove',
+      text:'• <strong>"If cost wasn\'t a factor at all — is this something you\'d actually want?"</strong>\n\n• <strong>"Have you had a repair situation before that caught you off guard financially?"</strong>\n\n• <strong>"What would have to be different for this to make sense?"</strong>',note:''},
+    obj:{label:'Based on Their Reason',badge:'badge-obj',text:'',
+      objs:[
+        {q:'"The price."',a:'"Totally understand. Our lowest plan is $4.99 a month — less than a dollar a day. Want to start there and see how it feels?"'},
+        {q:'"I don\'t use these plans."',a:'"Fair. 97% of our claims get approved. Most customers only file once a year — and that one claim pays for 3–5 years of the plan."'},
+        {q:'"I need to talk to my spouse."',a:'"Of course. Would it help if I stayed on the line while you check with them? I can answer any questions they have."'},
+        {q:'"I\'ll do it later."',a:'"The 30-day wait starts from today — so every day we wait is a day you\'re not fully covered. What if we do the smallest plan right now just to lock in today\'s date?"'}
+      ]},
+    close:{label:'Last Attempt',badge:'badge-close',
+      text:'<strong>"I respect your decision either way. Before I go — if I could get you the [Plan] for just [price], would that change anything?"</strong>\n\nIf still no: <strong>"No problem at all. You can always reach us at 1-855-241-9094 when you\'re ready. Have a great day!"</strong>',
+      note:'Know when to let go. A graceful exit keeps the door open. You\'ll be remembered differently than a pushy rep.'}
+  },es:{
+    opener:{label:'Re-Enganchar Después de un No',badge:'badge-open',
+      text:'<strong>"Lo respeto completamente. ¿Puedo preguntarle algo rápido — es el momento, el precio, o algo específico del plan?"</strong>',
+      note:'No contraataque. Pregunte primero. La razón le dice exactamente cómo responder.'},
+    prove:{label:'Descubriendo la Objeción Real',badge:'badge-prove',
+      text:'• <strong>"Si el precio no fuera un factor — ¿es algo que en realidad querría tener?"</strong>\n\n• <strong>"¿Ha tenido antes una reparación que lo tomó por sorpresa económicamente?"</strong>\n\n• <strong>"¿Qué tendría que ser diferente para que tuviera sentido?"</strong>',note:''},
+    obj:{label:'Según Su Razón',badge:'badge-obj',text:'',
+      objs:[
+        {q:'"El precio."',a:'"Lo entiendo. Nuestro plan más básico es $4.99 al mes — menos de un dólar al día. ¿Quiere empezar por ahí?"'},
+        {q:'"No uso estos planes."',a:'"Justo. El 97% de nuestros reclamos son aprobados. La mayoría de clientes solo lo usa una vez al año — y ese reclamo paga 3–5 años del plan."'},
+        {q:'"Tengo que hablar con mi esposo/a."',a:'"Por supuesto. ¿Le ayudaría si me quedo en línea mientras consulta? Puedo responder cualquier pregunta que tengan."'},
+        {q:'"Lo hago después."',a:'"La espera de 30 días empieza hoy — cada día que esperamos es un día sin cobertura completa. ¿Qué tal si hacemos el plan más pequeño ahora para asegurar la fecha de hoy?"'}
+      ]},
+    close:{label:'Último Intento',badge:'badge-close',
+      text:'<strong>"Respeto su decisión. Antes de terminar — si pudiera conseguirle el [Plan] por [precio], ¿eso cambiaría algo?"</strong>\n\nSi sigue siendo no: <strong>"Sin problema. Puede llamarnos al 1-855-241-9094 cuando esté listo. ¡Que tenga un buen día!"</strong>',
+      note:'Sepa cuándo soltar. Una salida elegante deja la puerta abierta.'}
+  }},
+  maybe:{title:"They're Unsure",en:{
+    opener:{label:'Guide the Undecided',badge:'badge-open',
+      text:'<strong>"No problem — let me help you think through it. Can I ask a couple of quick questions?"</strong>',
+      note:'An undecided customer is still in the conversation — that\'s a gift. Guide, don\'t push. Curiosity beats persuasion here.'},
+    prove:{label:'Diagnostic Questions',badge:'badge-prove',
+      text:'• <strong>"Which systems in your home are you most worried about — HVAC, plumbing, appliances?"</strong>\n\n• <strong>"Have you had a repair that was way more expensive than expected?"</strong>\n\n• <strong>"What does your current protection look like for those systems?"</strong>',
+      note:'Their answers tell you exactly which plan to recommend. Match the plan to their pain, not to the price.'},
+    obj:{label:'Handling Hesitation',badge:'badge-obj',text:'',
+      objs:[
+        {q:'"I\'m not sure I\'ll use it."',a:'"That\'s actually the best time to have it — when you don\'t need it yet. The day you need it, you\'ll be really glad it\'s there."'},
+        {q:'"I need to compare prices."',a:'"A single AC repair averages $450–$800. Our plans start at $8.99. One repair a year makes it pay for itself many times over."'},
+        {q:'"Can I cancel if I change my mind?"',a:'"Yes — cancel any time. No contracts, no penalties."'}
+      ]},
+    close:{label:'Recommendation Close',badge:'badge-close',
+      text:'<strong>"Based on what you told me, I\'d recommend the [Plan]. It covers [X and Y] — exactly what you mentioned. [Price] a month. Want to go ahead?"</strong>',
+      note:'Make a specific recommendation. Vague offers don\'t close. Point to what they told you and tie the plan to it.'}
+  },es:{
+    opener:{label:'Guiar al Indeciso',badge:'badge-open',
+      text:'<strong>"Sin problema — déjeme ayudarle a pensarlo. ¿Puedo hacerle un par de preguntas rápidas?"</strong>',
+      note:'Un cliente indeciso todavía está en la conversación — eso es una oportunidad. Guíe, no presione.'},
+    prove:{label:'Preguntas de Diagnóstico',badge:'badge-prove',
+      text:'• <strong>"¿Qué sistemas en su hogar le preocupan más — aire, plomería, electrodomésticos?"</strong>\n\n• <strong>"¿Ha tenido una reparación mucho más cara de lo esperado?"</strong>\n\n• <strong>"¿Qué protección tiene actualmente para esos sistemas?"</strong>',
+      note:'Sus respuestas le dicen exactamente qué plan recomendar.'},
+    obj:{label:'Manejando la Duda',badge:'badge-obj',text:'',
+      objs:[
+        {q:'"No sé si lo voy a usar."',a:'"Ese es el mejor momento para tenerlo — cuando todavía no lo necesita. El día que lo necesite, se alegrará de tenerlo."'},
+        {q:'"Necesito comparar precios."',a:'"Una reparación de aire sola promedia $450–$800. Nuestros planes empiezan en $8.99. Una reparación al año lo hace valer muchas veces."'},
+        {q:'"¿Puedo cancelar si cambio de opinión?"',a:'"Sí — cancele cuando quiera. Sin contratos ni penalizaciones."'}
+      ]},
+    close:{label:'Cierre con Recomendación',badge:'badge-close',
+      text:'<strong>"Según lo que me dijo, le recomendaría el [Plan]. Cubre [X e Y] — exactamente lo que mencionó. [Precio] al mes. ¿Seguimos?"</strong>',
+      note:'Haga una recomendación específica. Las ofertas vagas no cierran.'}
+  }},
+  close:{title:'Ready to Close',en:{
+    opener:{label:'Confirm — Then Move Fast',badge:'badge-open',
+      text:'<strong>"Great — I\'m glad this makes sense. Let me just confirm a few things to get your plan active today."</strong>',
+      note:'Don\'t re-sell. They\'re ready. Move quickly and confidently. Every extra word you say creates a new opportunity for doubt.'},
+    prove:{label:'Confirmation Questions',badge:'badge-prove',
+      text:'• <strong>"Just confirming — you\'re at [address]?"</strong>\n\n• <strong>"And you own the home, right?"</strong>\n\n• <strong>"Best number is [phone] — still good?"</strong>',
+      note:'These feel like routine questions but also re-confirm their commitment with each yes.'},
+    obj:{label:'Last-Second Hesitation',badge:'badge-obj',text:'',
+      objs:[
+        {q:'"Wait, let me think one more time."',a:'"Of course. Just know the 30-day wait starts today — so every day we wait is a day without full coverage. Want me to lock in today\'s date?"'},
+        {q:'"What if I want to cancel?"',a:'"Cancel any time — no commitment. But once you see how easy it is, I think you\'ll want to keep it."'}
+      ]},
+    close:{label:'Enrollment Close',badge:'badge-close',
+      text:'<strong>"Alright — enrolling you in [Plan] at [price]/month. Coverage is effective immediately for maintenance, 30 days for repairs. Confirmation goes to [email]. Anything else before we finalize?"</strong>',
+      note:'Say the price and don\'t pause on it. Move through it with confidence. Hesitation on the price signals doubt — which creates doubt in them.'}
+  },es:{
+    opener:{label:'Confirmar y Avanzar Rápido',badge:'badge-open',
+      text:'<strong>"Perfecto — me alegra que tenga sentido. Déjeme confirmar unos datos para activar su plan hoy."</strong>',
+      note:'No re-venda. Ya están listos. Avance rápido y con confianza. Cada palabra extra crea una nueva oportunidad para la duda.'},
+    prove:{label:'Preguntas de Confirmación',badge:'badge-prove',
+      text:'• <strong>"Confirmando — está en [dirección], ¿correcto?"</strong>\n\n• <strong>"¿Y es propietario, verdad?"</strong>\n\n• <strong>"El mejor número es [teléfono] — ¿sigue bien?"</strong>',
+      note:'Son preguntas rutinarias pero también reconfirman su compromiso con cada sí.'},
+    obj:{label:'Duda de Último Segundo',badge:'badge-obj',text:'',
+      objs:[
+        {q:'"Espere, déjeme pensar una vez más."',a:'"Claro. Solo sepa que la espera de 30 días empieza hoy — cada día que esperamos es un día sin cobertura completa. ¿Quiere que asegure la fecha de hoy?"'},
+        {q:'"¿Qué pasa si quiero cancelar?"',a:'"Cancela cuando quiera — sin compromiso. Pero creo que una vez que lo vea funcionando, querrá quedarse."'}
+      ]},
+    close:{label:'Cierre de Inscripción',badge:'badge-close',
+      text:'<strong>"Listo — le inscribo en [Plan] a [precio]/mes. La cobertura es efectiva de inmediato para mantenimiento, 30 días para reparaciones. La confirmación va a [correo]. ¿Algo más antes de finalizar?"</strong>',
+      note:'Diga el precio y no haga pausa en él. Avance con confianza. La duda en el precio crea duda en ellos.'}
+  }}
+};
+
+function selectScenario(s,el){
+  currentScenario=s;
+  document.querySelectorAll('.sc-card').forEach(function(c){c.classList.remove('active');});
+  el.classList.add('active');
+  renderScript();
+}
+function switchScriptLang(l){
+  currentScriptLang=l;
+  document.getElementById('ls-en').classList.toggle('active',l==='en');
+  document.getElementById('ls-es').classList.toggle('active',l==='es');
+  renderScript();
+}
+function renderScript(){
+  var sc=SCRIPTS[currentScenario];
+  var data=sc[currentScriptLang];
+  document.getElementById('sp-panel-title').textContent=sc.title;
+  var html='';
+  ['opener','prove','obj','close'].forEach(function(k){
+    var s=data[k];
+    html+='<div class="script-section">';
+    html+='<div class="ss-label"><span class="ss-badge '+s.badge+'">'+s.label+'</span></div>';
+    if(k==='obj'){
+      if(s.objs&&s.objs.length){
+        html+='<div class="objections-grid">';
+        s.objs.forEach(function(o){html+='<div class="obj-card"><div class="obj-q">'+o.q+'</div><div class="obj-a">'+o.a+'</div></div>';});
+        html+='</div>';
+      }
+    } else {
+      html+='<div class="script-text">'+s.text.replace(/\n/g,'<br>')+'</div>';
+    }
+    if(s.note)html+='<div class="script-note">💡 '+s.note+'</div>';
+    html+='</div>';
+  });
+  document.getElementById('script-body').innerHTML=html;
 }
 
-// ═══ RESET ═══════════════════════════════════════════
-function resetAll(){ selected.clear(); manualDisc={}; render(); }
+// ──────────────────────────────────────────────────
+// TERMS
+// ──────────────────────────────────────────────────
+function switchTermsLang(l,el){
+  document.querySelectorAll('.tls-btn').forEach(function(b){b.classList.remove('active');});
+  el.classList.add('active');
+  document.getElementById('terms-en').classList.toggle('active',l==='en');
+  document.getElementById('terms-es').classList.toggle('active',l==='es');
+}
+function toggleTerms(el){el.classList.toggle('closed');}
 
-// ═══ INIT ════════════════════════════════════════════
-buildBS(); buildAll(); render();
+// ──────────────────────────────────────────────────
+// CALL TIMER
+// ──────────────────────────────────────────────────
+var timerInterval=null;
+var timerSeconds=0;
+var timerRunning=false;
+var callLog=[];
+
+function fmtTime(s){
+  var h=Math.floor(s/3600);
+  var m=Math.floor((s%3600)/60);
+  var sec=s%60;
+  return (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(sec<10?'0':'')+sec;
+}
+function updateDisplay(){
+  var d=document.getElementById('timer-display');
+  d.textContent=fmtTime(timerSeconds);
+  d.className='timer-display'+(timerSeconds>=600&&timerSeconds<900?' warn':timerSeconds>=900?' danger':'');
+}
+function startTimer(){
+  if(timerRunning)return;
+  timerRunning=true;
+  timerInterval=setInterval(function(){timerSeconds++;updateDisplay();},1000);
+  document.getElementById('btn-start').style.display='none';
+  document.getElementById('btn-pause').style.display='inline-flex';
+  document.getElementById('btn-stop').style.display='inline-flex';
+  document.getElementById('timer-status').textContent='RUNNING';
+  document.getElementById('timer-status').className='timer-status running';
+}
+function pauseTimer(){
+  if(!timerRunning)return;
+  timerRunning=false;
+  clearInterval(timerInterval);
+  var btn=document.getElementById('btn-pause');
+  btn.textContent='▶ Resume';
+  btn.onclick=function(){
+    btn.textContent='⏸ Pause';
+    btn.onclick=pauseTimer;
+    startTimer();
+  };
+  document.getElementById('timer-status').textContent='PAUSED';
+  document.getElementById('timer-status').className='timer-status';
+}
+function stopTimer(){
+  timerRunning=false;
+  clearInterval(timerInterval);
+  var dur=timerSeconds;
+  var notes=document.getElementById('call-notes').value.trim();
+  var now=new Date();
+  var h=now.getHours();
+  var ampm=h>=12?'PM':'AM';
+  h=h%12||12;
+  var timeStr=h+':'+(now.getMinutes()<10?'0':'')+now.getMinutes()+' '+ampm;
+  callLog.unshift({duration:dur,notes:notes||'(no notes)',time:timeStr});
+  renderLog();
+  timerSeconds=0;
+  updateDisplay();
+  document.getElementById('btn-start').style.display='inline-flex';
+  document.getElementById('btn-pause').style.display='none';
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('btn-pause').textContent='⏸ Pause';
+  document.getElementById('btn-pause').onclick=pauseTimer;
+  document.getElementById('timer-status').textContent='READY';
+  document.getElementById('timer-status').className='timer-status';
+  document.getElementById('call-notes').value='';
+  updateStats();
+}
+function resetTimer(){
+  timerRunning=false;
+  clearInterval(timerInterval);
+  timerSeconds=0;
+  updateDisplay();
+  document.getElementById('btn-start').style.display='inline-flex';
+  document.getElementById('btn-pause').style.display='none';
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('timer-status').textContent='READY';
+  document.getElementById('timer-status').className='timer-status';
+}
+function renderLog(){
+  var el=document.getElementById('log-list');
+  if(!callLog.length){el.innerHTML='<div class="log-empty">No calls logged yet. End a call to log it.</div>';return;}
+  el.innerHTML='<div class="log-list">'+callLog.map(function(c){
+    var preview=c.notes.length>60?c.notes.substring(0,60)+'…':c.notes;
+    return '<div class="log-item"><div class="log-duration">'+fmtTime(c.duration)+'</div><div class="log-note-preview">'+preview+'</div><div class="log-time">'+c.time+'</div></div>';
+  }).join('')+'</div>';
+}
+function updateStats(){
+  document.getElementById('calls-today').textContent=callLog.length;
+  if(callLog.length){
+    var avg=Math.round(callLog.reduce(function(s,c){return s+c.duration;},0)/callLog.length);
+    document.getElementById('avg-dur').textContent=fmtTime(avg);
+  }
+}
+function clearLog(){callLog=[];renderLog();updateStats();}
+function copyNotes(){
+  var t=document.getElementById('call-notes').value;
+  navigator.clipboard.writeText(t).then(function(){
+    var b=document.getElementById('copy-notes-btn');
+    b.textContent='Copied!';
+    b.classList.add('copy-done');
+    setTimeout(function(){b.textContent='Copy';b.classList.remove('copy-done');},2000);
+  });
+}
+function clearNotes(){document.getElementById('call-notes').value='';}
+
+// ──────────────────────────────────────────────────
+// PAGE SWITCH
+// ──────────────────────────────────────────────────
+function switchPage(p,el){
+  document.querySelectorAll('.page').forEach(function(pg){pg.classList.remove('active');});
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+}
+
+// INIT
+buildBS();
+buildAll();
+render();
+renderScript();
 </script>
 </body>
 </html>
